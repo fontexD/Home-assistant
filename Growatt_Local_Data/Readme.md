@@ -5,9 +5,9 @@ https://www.aliexpress.com/item/1005001621816794.html
 
 
 Step 1. indsæt USB-TTL i Ha-enheden (Pi4-nuc-bærebar) whatever man bruger til kører sin ha på, sæt netværkkabel i inverter i RS485 port, i den anden ende KLIP stik af og sæt følgende på USB-TTL enhed<br>
-Hel blå B(`<br>`),
-Hvid blå A(`<br>`),
-(`<br>`),
+Hel blå B<br>
+Hvid blå A<br>
+<br>
 Step 2. Indstillinger --> System --> Hardware --> Al hardware, Scroll ned indtil du kommer tili usb enheder de ser sådan her ud ttyUSB0 ttyUSB1 ttyUSB2 alt efter hvor mange usb devices der sidder i
 den hedder ofte noget med "dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0" fold den ud og koper alt udfor ID: i mit filfælde "/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0"
 <br>
