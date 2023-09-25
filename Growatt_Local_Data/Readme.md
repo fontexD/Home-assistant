@@ -5,7 +5,7 @@ https://www.aliexpress.com/item/1005001621816794.html
 Samt 1 stk netværkskabel imellem inverter i RS485 port -> ens Home-assistant server/enhed/computer.
 
 
-Step 1. indsæt USB-TTL i Ha-enheden (Pi4-nuc-bærebar) whatever man bruger til kører sin ha på, sæt netværkkabel i inverter i RS485 port, i den anden ende KLIP stik af og sæt følgende på USB-TTL enhed<br>
+<b>Step 1.</b> indsæt USB-TTL i Ha-enheden (Pi4-nuc-bærebar) whatever man bruger til kører sin ha på, sæt netværkkabel i inverter i RS485 port, i den anden ende KLIP stik af og sæt følgende på USB-TTL enhed<br>
 Hel blå B<br>
 Hvid blå A<br>
 <br>
