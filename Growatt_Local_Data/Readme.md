@@ -10,6 +10,16 @@ Hel blå B<br>
 Hvid blå A<br>
 <br>
 
+![1](https://github.com/fontexD/Home-assistant/assets/87015443/b19289ad-2ff2-4d60-8b00-3f576bb9901f)
+<br>
+![2](https://github.com/fontexD/Home-assistant/assets/87015443/572d94d0-3c99-4c69-95d3-d511a4b863e2)
+
+<br>
+
+![3](https://github.com/fontexD/Home-assistant/assets/87015443/87737c65-77c6-4b65-bdae-ad82c4a1dcc1)
+
+<br>
+
 Step 2. Indstillinger --> System --> Hardware --> Al hardware, Scroll ned indtil du kommer tili usb enheder de ser sådan her ud ttyUSB0 ttyUSB1 ttyUSB2 alt efter hvor mange usb devices der sidder i
 den hedder ofte noget med "dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0" fold den ud og koper alt udfor ID: i mit filfælde "/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0"
 
