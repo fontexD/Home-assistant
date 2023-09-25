@@ -34,7 +34,7 @@ For at gennemføre dette, vil du have brug for følgende:
 
 **Vigtigt:** Hvis du bruger RS485 til kommunikation med et batteri, kan denne løsning  ikke bruges. Denne vejledning antager brugen af et standard Growatt-batteri, der ikke bruger RS485-porten. Hvis du bruger et tredjepartsbatteri, skal du kontrollere, om porten er tilgængelig.
 
-Video guide til indstille inverter: https://www.dropbox.com/scl/fi/5pqa7w1votx2jxwkfy9v4/VID20230925164749.mp4?rlkey=z5qdqrt1hivjlr419w1vu3gcf&dl=0
+Video guide til indstille inverter: [denne video](https://www.dropbox.com/scl/fi/5pqa7w1votx2jxwkfy9v4/VID20230925164749.mp4?rlkey=z5qdqrt1hivjlr419w1vu3gcf&dl=0)
 
 ## Trin 3: Identificér USB-enheds-ID
 
