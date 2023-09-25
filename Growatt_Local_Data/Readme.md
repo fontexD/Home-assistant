@@ -11,7 +11,7 @@ For at gennemføre dette, vil du have brug for følgende:
 ## Trin 1: Hardwareopsætning
 
 1. Indsæt USB-TTL-adapteren i din Home Assistant-enhed (f.eks. Raspberry Pi, NUC, bærbar computer).
-2. Tilslut RS485-netværkskablet til inverterens RS485-port.
+2. Tilslut netværkskablet til inverterens RS485-port.
 3. I den anden ende af kablet skal du klippe stikket af og forbinde ledningerne som følger:
     - Blå ledning -> B
     - Hvid-blå ledning -> A
