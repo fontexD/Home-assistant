@@ -26,25 +26,25 @@ Video guide til indstille inverter: https://www.dropbox.com/scl/fi/5pqa7w1votx2j
 <br>
 
 
-Step 2. På inverter hold OK nede i 5-10 sekunder giv slip, pil op eller ned indtil RS485 kommer frem Tryk ok, ok igen og sæt den på VPP (for den kan snakke til ha over usb enheder)
+<b>Step 2.</b> På inverter hold OK nede i 5-10 sekunder giv slip, pil op eller ned indtil RS485 kommer frem Tryk ok, ok igen og sæt den på VPP (for den kan snakke til ha over usb enheder)
 VIGTIG INFO hvis du bruger rs485 til kommunikere med batteri så kan denne løsning ikke lade sig gøre, jeg bruger et alm growatt batteri, den bruger ikke den port, den brgues ofte hvis man bruger noget 3.part batteri, men det finder man ud af når man ser om porten er ledig.
 
-Step 3. Indstillinger --> System --> Hardware --> Al hardware, Scroll ned indtil du kommer tili usb enheder de ser sådan her ud ttyUSB0 ttyUSB1 ttyUSB2 alt efter hvor mange usb devices der sidder i
+<b>Step 3.</b> Indstillinger --> System --> Hardware --> Al hardware, Scroll ned indtil du kommer tili usb enheder de ser sådan her ud ttyUSB0 ttyUSB1 ttyUSB2 alt efter hvor mange usb devices der sidder i
 den hedder ofte noget med "dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0" fold den ud og koper alt udfor ID: i mit filfælde "/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0"
 
 <br>
 <br>
 
-Step 4. I Hacs Hent SolaX Inverter Modbus
+<b>Step 4.</b> I Hacs Hent SolaX Inverter Modbus
 
 <br>
 
 
 
-Step 5. gå i Indstillinger --> Enheder og tjenster --> Tilføj Integration --> Solax Inveter MODBUS opsæt som følgende ->
+<b>Step 5. </b>gå i Indstillinger --> Enheder og tjenster --> Tilføj Integration --> Solax Inveter MODBUS opsæt som følgende ->
 <br>
 
-Video guide til opsætning i HA : https://www.dropbox.com/scl/fi/q5qz8r6nc7o99iwtz3pgr/videoguide.mkv?rlkey=tthhx5nupirpwkfivrjznh8sg&dl=0
+<b>Video guide til opsætning i HA :</b> https://www.dropbox.com/scl/fi/q5qz8r6nc7o99iwtz3pgr/videoguide.mkv?rlkey=tthhx5nupirpwkfivrjznh8sg&dl=0
 
 <br>
 ![1](https://github.com/fontexD/Home-assistant/assets/87015443/44abda9b-8038-45be-8dbe-e0548f0eecd0) 
