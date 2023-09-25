@@ -22,10 +22,8 @@ Hvid blå A<br>
 
 <br>
 Video guide til indstille inverter: https://www.dropbox.com/scl/fi/5pqa7w1votx2jxwkfy9v4/VID20230925164749.mp4?rlkey=z5qdqrt1hivjlr419w1vu3gcf&dl=0
-
-
 <br>
-
+<br>
 
 
 Step 2. På inverter hold OK nede i 5-10 sekunder giv slip, pil op eller ned indtil RS485 kommer frem Tryk ok, ok igen og sæt den på VPP (for den kan snakke til ha over usb enheder)
