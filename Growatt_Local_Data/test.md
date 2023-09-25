@@ -52,9 +52,8 @@ I Home Assistant, naviger til HACS (Home Assistant Community Store) og søg efte
 
 For en detaljeret videoinstruktion om opsætning af denne integration i Home Assistant, se [denne video](https://www.dropbox.com/scl/fi/q5qz8r6nc7o99iwtz3pgr/videoguide.mkv?rlkey=tthhx5nupirpwkfivrjznh8sg&dl=0).
 
-<br>
 ![1](https://github.com/fontexD/Home-assistant/assets/87015443/44abda9b-8038-45be-8dbe-e0548f0eecd0) 
-<br>
+
 ![2](https://github.com/fontexD/Home-assistant/assets/87015443/d99f34d9-0224-4fb5-b013-97218e86dd03)
 
 
