@@ -39,6 +39,8 @@ Step 4. I Hacs Hent SolaX Inverter Modbus
 
 <br>
 
+
+Video guide til opsætning : https://www.dropbox.com/scl/fi/q5qz8r6nc7o99iwtz3pgr/videoguide.mkv?rlkey=tthhx5nupirpwkfivrjznh8sg&dl=0
 Step 5. gå i Indstillinger --> Enheder og tjenster --> Tilføj Integration --> Solax Inveter MODBUS opsæt som følgende ->
 <br>
 <br>
