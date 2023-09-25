@@ -16,7 +16,15 @@ For at gennemføre dette, vil du have brug for følgende:
     - Blå ledning -> B
     - Hvid-blå ledning -> A
 
-![Forbindelsesdiagram](assets/forbindelsesdiagram.png)
+![1](https://github.com/fontexD/Home-assistant/assets/87015443/023c5033-bb5f-4c67-a81b-3faa5fcad26c)
+
+<br>
+
+![2](https://github.com/fontexD/Home-assistant/assets/87015443/41a5f174-3006-4a66-84e7-593eb8974fa9)
+
+<br>
+
+![3](https://github.com/fontexD/Home-assistant/assets/87015443/6a68fabf-b7d3-4543-92f1-506bbad13bed)
 
 ## Trin 2: Konfigurér Inverteren
 
