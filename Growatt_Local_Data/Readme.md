@@ -6,7 +6,7 @@ Denne guide vil guide dig igennem processen med at integrere din solcelle invert
 
 For at gennemføre dette, vil du have brug for følgende:
 - [USB-TTL Adapter](https://www.aliexpress.com/item/1005001621816794.html)
-- Et RS485-netværkskabel til at forbinde inverteren til din Home Assistant-server eller enhed.
+- Et netværkskabel til at forbinde inverteren til din Home Assistant-server eller enhed på usb-ttl enheden.
 
 ## Trin 1: Hardwareopsætning
 
