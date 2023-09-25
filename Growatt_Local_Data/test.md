@@ -32,7 +32,7 @@ For at gennemføre dette, vil du have brug for følgende:
 2. Brug op eller ned knapperne indtil "RS485" vises på skærmen.
 3. Tryk på "OK", og tryk derefter igen på "OK" for at vælge "VPP" (til kommunikation med Home Assistant via USB-enheder).
 
-**Vigtigt:** Hvis du bruger RS485 til kommunikation med et batteri, kan denne løsning muligvis ikke bruges. Denne vejledning antager brugen af et standard Growatt-batteri, der ikke bruger RS485-porten. Hvis du bruger et tredjepartsbatteri, skal du kontrollere, om porten er tilgængelig.
+**Vigtigt:** Hvis du bruger RS485 til kommunikation med et batteri, kan denne løsning  ikke bruges. Denne vejledning antager brugen af et standard Growatt-batteri, der ikke bruger RS485-porten. Hvis du bruger et tredjepartsbatteri, skal du kontrollere, om porten er tilgængelig.
 
 ## Trin 3: Identificér USB-enheds-ID
 
@@ -52,8 +52,9 @@ I Home Assistant, naviger til HACS (Home Assistant Community Store) og søg efte
 
 For en detaljeret videoinstruktion om opsætning af denne integration i Home Assistant, se [denne video](https://www.dropbox.com/scl/fi/q5qz8r6nc7o99iwtz3pgr/videoguide.mkv?rlkey=tthhx5nupirpwkfivrjznh8sg&dl=0).
 
-![Integrationskonfiguration](assets/integrationskonfiguration.png)
+<br>
+![1](https://github.com/fontexD/Home-assistant/assets/87015443/44abda9b-8038-45be-8dbe-e0548f0eecd0) 
+<br>
+![2](https://github.com/fontexD/Home-assistant/assets/87015443/d99f34d9-0224-4fb5-b013-97218e86dd03)
 
-Nyd at overvåge data fra din solcelle inverter gennem Home Assistant!
 
-For yderligere support, besøg venligst [Home Assistant Community](https://community.home-assistant.io/).
