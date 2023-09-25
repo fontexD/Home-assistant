@@ -10,13 +10,15 @@ Hel blå B<br>
 Hvid blå A<br>
 <br>
 
-![1](https://github.com/fontexD/Home-assistant/assets/87015443/b19289ad-2ff2-4d60-8b00-3f576bb9901f)
-<br>
-![2](https://github.com/fontexD/Home-assistant/assets/87015443/572d94d0-3c99-4c69-95d3-d511a4b863e2)
+![1](https://github.com/fontexD/Home-assistant/assets/87015443/023c5033-bb5f-4c67-a81b-3faa5fcad26c)
 
 <br>
 
-![3](https://github.com/fontexD/Home-assistant/assets/87015443/87737c65-77c6-4b65-bdae-ad82c4a1dcc1)
+![2](https://github.com/fontexD/Home-assistant/assets/87015443/41a5f174-3006-4a66-84e7-593eb8974fa9)
+
+<br>
+
+![3](https://github.com/fontexD/Home-assistant/assets/87015443/6a68fabf-b7d3-4543-92f1-506bbad13bed)
 
 <br>
 
