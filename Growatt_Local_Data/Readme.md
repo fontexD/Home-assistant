@@ -1,4 +1,4 @@
-# Integrering af Solcelle Inverter i Home Assistant
+# Integrering af Solcelle Inverter i Home Assistant (dette er gyldigt for SPH modeller af invertere ikke MOD)
 
 ## Introduktion
 
