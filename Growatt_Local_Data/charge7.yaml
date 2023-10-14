@@ -1,0 +1,29 @@
+blueprint:
+  name: Custom Charger Time
+  description: Create a charger time automation with a custom integration name.
+  domain: automation
+  input:
+    solax_integration_name:
+      name: Solax Integration Name
+      description: Enter the name of your Solax integration.
+      selector:
+        text:
+
+  trigger:
+    - platform: state
+      entity_id: input_boolean.start_growatt_charge
+      to: "on"
+  action:
+    - service: select.select_option
+      data_template:
+        entity_id: select.{{ input_text.solax_integration_name }}_charger_start_time_1
+        option: >-
+          {{ states('input_datetime.growatt_start_time') |
+          regex_replace(':[0-9]{2}$', '') }}
+      enabled: true
+    - service: select.select_option
+      data_template:
+        entity_id: select.{{ input_text.solax_integration_name }}_charger_end_time_1
+        option: >-
+          {{ states('input_datetime.growatt_end_time') |
+          regex_replace(':[0-9]{2}$', '') }}
