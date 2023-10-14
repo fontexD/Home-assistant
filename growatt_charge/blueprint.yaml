@@ -1,0 +1,63 @@
+blueprint:
+  name: Flexible Growatt Charger Control
+  description: Control a Growatt charger with flexibility.
+
+  input:
+    solax_integration_name:
+      name: Solax Integration Name
+      description: Name of the Solax integration (e.g., "growatts").
+      selector:
+        entity:
+          domain: solax_integration
+
+    start_time_entity:
+      name: Start Time Entity
+      description: Entity to set the charger start time.
+      selector:
+        entity:
+
+    end_time_entity:
+      name: End Time Entity
+      description: Entity to set the charger end time.
+      selector:
+        entity:
+
+    charger_option_entity:
+      name: Charger Option Entity
+      description: Entity to control charger options.
+      selector:
+        entity:
+
+  trigger:
+    platform: state
+    entity_id: input_boolean.start_growatt_charge
+    to: "on"
+
+  action:
+    - service: select.select_option
+      data_template:
+        entity_id: "{{ solax_integration_name }}.{{ start_time_entity }}"
+        option: >-
+          {{ states('input_datetime.growatt_start_time') |
+          regex_replace(':[0-9]{2}$', '') }}
+      enabled: true
+
+    - service: select.select_option
+      data_template:
+        entity_id: "{{ solax_integration_name }}.{{ end_time_entity }}"
+        option: >-
+          {{ states('input_datetime.growatt_end_time') |
+          regex_replace(':[0-9]{2}$', '') }}
+      enabled: true
+
+    - service: select.select_option
+      data:
+        entity_id: "{{ solax_integration_name }}.{{ charger_option_entity }}"
+        option: Enabled
+      entity_id: "{{ solax_integration_name }}.{{ charger_option_entity }}"
+      type: select_option
+      option: Enabled
+      enabled: true
+
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.start_growatt_charge
