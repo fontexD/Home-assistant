@@ -1,0 +1,24 @@
+blueprint:
+  name: Growatt Charger Control
+  domain: automation
+  description: |
+    Control a Growatt charger with flexibility.
+
+    To use this blueprint, please follow these steps:
+    
+    1. Specify the Solax Integration Name (e.g., "growatts") as the input.
+    2. Customize the action steps in the created automation with the specific entity names and attributes from your Solax integration.
+
+  input:
+    solax_integration_name:
+      name: Solax Integration Name
+      description: Name of the Solax integration (e.g., "growatts")
+
+  trigger:
+    platform: state
+    entity_id: input_boolean.start_growatt_charge
+    to: "on"
+
+  action: []
+
+mode: single
