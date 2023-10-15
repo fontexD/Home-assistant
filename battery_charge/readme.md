@@ -1,6 +1,6 @@
 # Manual Charging Configuration for Solax Inverter (Modbus v. 2023.09.07)
 
-This guide will walk you through the process of configuring manual charging for your Solax Inverter with Modbus version 2023.09.07. Manual charging allows you to control when your inverter charges your battery.
+This guide will walk you through the process of configuring manual charging for your Growatt inverter by using Solax Modbus version 2023.09.07. Manual charging allows you to control when your inverter charges your battery.
 
 ## Prerequisites
 
@@ -8,6 +8,7 @@ Before you begin, make sure you have the following prerequisites:
 
 - The latest version of Solax Inverter Modbus (v. 2023.09.07) installed and configured.
 - Home Assistant or a similar home automation platform.
+- Testet with SPH3600 from Growatt ( should work for all growatt models) 
 
 ## Step 1: Create Helpers
 
