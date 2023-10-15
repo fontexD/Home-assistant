@@ -60,6 +60,7 @@ mode: single
 ```
 
 Make sure to replace <integration_name_solax> with the actual name of your Solax integration.
+![illustrate](https://github.com/fontexD/Home-assistant/assets/87015443/d70d7606-7684-4d50-8b0f-47885480833f)
 
 ## Step 3: Create a Dashboard Element
 
