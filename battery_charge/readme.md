@@ -56,7 +56,7 @@ action:
   - service: input_boolean.turn_off
     entity_id: input_boolean.start_growatt_charge
 mode: single
-
+```
 
 
 Make sure to replace <integration_name_solax> with the actual name of your Solax integration.
@@ -64,10 +64,11 @@ Make sure to replace <integration_name_solax> with the actual name of your Solax
 ## Step 3: Create a Dashboard Element
 
 Add the following dashboard element to your Home Assistant dashboard to control manual charging:
-```
-type: entities
+
+```type: entities
 entities:
   - entity: input_datetime.growatt_start_time
   - entity: input_datetime.growatt_end_time
   - entity: input_boolean.start_growatt_charge
 title: Battery Charging Control
+```
