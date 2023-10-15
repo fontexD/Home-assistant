@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
+
     <title>Manual Charging Configuration for Solax Inverter (Modbus v. 2023.09.07)</title>
-</head>
-<body>
+
+
     <h1>Manual Charging Configuration for Solax Inverter (Modbus v. 2023.09.07)</h1>
 
     <p>This guide will walk you through the process of configuring manual charging for your Solax Inverter with Modbus version 2023.09.07. Manual charging allows you to control when your inverter charges your battery.</p>
@@ -87,5 +85,3 @@ title: Battery Charging Control
     <p>This dashboard element will allow you to set the start and end times for manual charging and initiate the charging process by toggling the <code>start_growatt_charge</code> switch.</p>
 
     <p>That's it! You've successfully configured manual charging for your Solax Inverter Modbus (v. 2023.09.07) using Home Assistant.</p>
-</body>
-</html>
