@@ -57,7 +57,7 @@ action:
   - service: input_boolean.turn_off
     entity_id: input_boolean.start_growatt_charge
 mode: single```
-
+</details>
 
 Make sure to replace <integration_name_solax> with the actual name of your Solax integration.
 
