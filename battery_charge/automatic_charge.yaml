@@ -5,29 +5,29 @@ action:
   - service: select.select_option
     data_template:
       entity_id: select.growatts_charger_start_time_1
-      option: "{{ states('input_text.lowest_three_hour_start_hour') }}"
+      option: "{{ states('input_text.lowest_three_hour_start_hour') }}" #Sensor based on python script to evaluate raw_tomorrow from 00.00 to 23.59 from energi-data-service to find 3 chepeast hours to charge
   - service: select.select_option
     data_template:
       entity_id: select.growatts_charger_end_time_1
       option: >-
         {{
         (as_timestamp(strptime(states('input_text.lowest_three_hour_start_hour'),
-        '%H:%M')) + 3*3600) | timestamp_custom('%H:%M', true) }}
-  - device_id: select.growatts_charger_switch
+        '%H:%M')) + 3*3600) | timestamp_custom('%H:%M', true) }} #set start charge end time 3 hours later then starting point from cheapest upcoming 3 hours 
+  - device_id: select.growatts_charger_switch #enable charge time 1
     domain: select
     entity_id: select.growatts_charger_switch
     type: select_option
     option: Enabled
-  - device_id: select.growatts_charger_time_1
+  - device_id: select.growatts_charger_time_1 #enabled charge switch to change running mode from whatever to battery charge
     domain: select
     entity_id: select.growatts_charger_time_1
     type: select_option
     option: Enabled
-  - service: input_datetime.set_datetime
+  - service: input_datetime.set_datetime #update start time-field on dashboard to show when the battery is gonna charge 
     data_template:
       entity_id: input_datetime.growatt_start_time
       time: "{{ states('input_text.lowest_three_hour_start_hour') }}"
-  - service: input_datetime.set_datetime
+  - service: input_datetime.set_datetime  #update end time-field on dashboard to show when the battery is gonna charge 
     data_template:
       entity_id: input_datetime.growatt_end_time
       time: >-
