@@ -1,0 +1,36 @@
+alias: Growatt_Battery_Charge_Automatic
+description: Set Charging Times Automatically
+trigger: []
+action:
+  - service: select.select_option
+    data_template:
+      entity_id: select.growatts_charger_start_time_1
+      option: "{{ states('input_text.lowest_three_hour_start_hour') }}"
+  - service: select.select_option
+    data_template:
+      entity_id: select.growatts_charger_end_time_1
+      option: >-
+        {{
+        (as_timestamp(strptime(states('input_text.lowest_three_hour_start_hour'),
+        '%H:%M')) + 3*3600) | timestamp_custom('%H:%M', true) }}
+  - device_id: select.growatts_charger_switch
+    domain: select
+    entity_id: select.growatts_charger_switch
+    type: select_option
+    option: Enabled
+  - device_id: select.growatts_charger_time_1
+    domain: select
+    entity_id: select.growatts_charger_time_1
+    type: select_option
+    option: Enabled
+  - service: input_datetime.set_datetime
+    data_template:
+      entity_id: input_datetime.growatt_start_time
+      time: "{{ states('input_text.lowest_three_hour_start_hour') }}"
+  - service: input_datetime.set_datetime
+    data_template:
+      entity_id: input_datetime.growatt_end_time
+      time: >-
+        {{
+        (as_timestamp(strptime(states('input_text.lowest_three_hour_start_hour'),
+        '%H:%M')) + 3*3600) | timestamp_custom('%H:%M', true) }}
