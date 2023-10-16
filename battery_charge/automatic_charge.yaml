@@ -6,7 +6,7 @@ action:
     data_template:
       entity_id: select.growatts_charger_start_time_1
       option: "{{ states('input_text.lowest_three_hour_start_hour') }}" #Sensor based on python script to evaluate raw_tomorrow from 00.00 to 23.59 from energi-data-service to find 3 chepeast hours to charge
-  - service: select.select_option #set start charge end time 3 hours later then starting point from cheapest upcoming 3 hours 
+  - service: select.select_option #set end charge time 3 hours later then starting point from cheapest upcoming 3 hours 
     data_template:
       entity_id: select.growatts_charger_end_time_1
       option: >-
