@@ -1,0 +1,20 @@
+'0x0c4314fffe4843db':
+  friendly_name: lampe_hovedor
+'0x5c0272fffe5de927':
+  friendly_name: gardin_stuen
+'0xbc33acfffe5faa04':
+  friendly_name: '0xbc33acfffe5faa04'
+'0xa4c1381db6d0d07e':
+  friendly_name: Køleskab
+'0xa4c138d080198ca0':
+  friendly_name: fryser
+'0x00158d0007e41547':
+  friendly_name: katte_sensor
+  occupancy_timeout: 2
+'0x00158d0006ff2d87':
+  friendly_name: '0x00158d0006ff2d87'
+  legacy: true
+'0x0015bc001b022028':
+  friendly_name: Frient
+'0x847127fffecd7fd0':
+  friendly_name: '0x847127fffecd7fd0'

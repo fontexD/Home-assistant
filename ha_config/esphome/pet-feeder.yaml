@@ -1,0 +1,108 @@
+esphome:
+  name: ss4h_pf
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: "fontex"
+  password: "opgash192"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Ss4H Pf Fallback Hotspot"
+    password: "cgEYvF7iequw"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  services:
+    - service: start_buzzer
+      variables:
+        delay_time: int
+      then:
+        - switch.turn_on: buzzer_pf_id
+        - delay: !lambda 'return delay_time;'
+        - switch.turn_off: buzzer_pf_id
+    - service: stepper_control
+      variables:
+        target: int
+      then:
+        - stepper.report_position:
+            id: ss4h_pf_motor
+            position: 0      
+        - stepper.set_target:
+            id: ss4h_pf_motor
+            target: !lambda 'return target;'
+
+ota:
+
+switch:
+  - platform: gpio
+    pin: 2
+    name: "Buzzer_PF"
+    id: buzzer_pf_id
+  - platform: gpio
+    pin: 1
+    name: "Led_PF"
+    id: led_pf_id
+    inverted: yes
+
+binary_sensor:
+  - platform: gpio
+    pin: 5
+    name: "PIR_PF" 
+  - platform: gpio
+    pin: 4
+    name: "Button_PF" 
+    filters:
+    - invert:
+    on_click:
+      - min_length: 1000ms
+        max_length: 5000ms
+        then:
+        - switch.turn_on: buzzer_pf_id
+        - switch.turn_on: led_pf_id
+        - delay: 100ms
+        - switch.turn_off: buzzer_pf_id
+        - switch.turn_off: led_pf_id
+        - delay: 50ms
+        - switch.turn_on: buzzer_pf_id
+        - switch.turn_on: led_pf_id
+        - delay: 100ms
+        - switch.turn_off: buzzer_pf_id
+        - switch.turn_off: led_pf_id
+        - stepper.report_position:
+            id: ss4h_pf_motor
+            position: 0      
+        - stepper.set_target:
+            id: ss4h_pf_motor 
+            target: -200
+    on_release:
+      - switch.turn_on: buzzer_pf_id
+      - switch.turn_on: led_pf_id
+      - delay: 100ms
+      - switch.turn_off: buzzer_pf_id
+      - switch.turn_off: led_pf_id
+      - stepper.report_position:
+          id: ss4h_pf_motor
+          position: 0      
+      - stepper.set_target:
+          id: ss4h_pf_motor 
+          target: 800
+
+    
+stepper:
+  - platform: uln2003
+    id: ss4h_pf_motor
+    pin_a: 16
+    pin_b: 14
+    pin_c: 12
+    pin_d: 13
+    max_speed: 250 steps/s
+
+    # Optional:
+    sleep_when_done: true

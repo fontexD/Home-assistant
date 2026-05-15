@@ -1,0 +1,119 @@
+sensor:
+  - name: "Lights on 1st floor"
+    unique_id: lights_1st_floor
+    default_entity_id: sensor.lights_1st_floor
+    state: >
+      {%- set search_state = 'on' %}
+      {%- set search_areas = ['Soveværelse', 'Badeværelse', 'Stue', 'Køkken', 'trappe', 'Entre', 'Jessie værelse'] %}
+      {%- set ns = namespace(lights=[]) %}
+      {%- for light in states.light | selectattr('state','eq', search_state) %}
+        {%- for area in search_areas %}
+          {% if area_name(light.entity_id) == area and "1st Floor" not in state_attr(light.entity_id, "friendly_name") %}
+            {%- set ns.lights = ns.lights + [ light.entity_id ] %}
+          {% endif%}
+        {%- endfor %}
+      {%- endfor %}
+      {{ ns.lights | list | length }}
+
+  - name: "Solar Panel price"
+    unique_id: solar_panel_price
+    default_entity_id: sensor.solar_panel_price
+    state: "35000"
+    unit_of_measurement: "KR"
+
+  - name: "Solar Panel savings"
+    unique_id: solar_savings
+    default_entity_id: sensor.solar_savings
+    state: "{{ ((states('sensor.energy_consumed_luxembourg') | float) - 145) * state_attr('sensor.nordpool_kwh_dk1_dkk_3_10_025', 'average') }}"
+    unit_of_measurement: "KWH"
+
+  - name: "Solar Panel left"
+    unique_id: solar_panel_left
+    default_entity_id: sensor.solar_panel_left
+    state: "{{ (states('sensor.solar_panel_price') | float - (states('sensor.solar_savings')) | float ) }}"
+    unit_of_measurement: "KR"
+
+  - name: "self_consumption"
+    unique_id: self_consumption
+    default_entity_id: sensor.self_consumption
+    state: "{{ ((states('sensor.growatts_today_s_solar_energy') | float)) + ((states('sensor.growatts_today_s_battery_output_energy') | float)) - ((states('sensor.growatts_today_s_battery_input_energy') | float)) - ((states('sensor.growatts_today_s_grid_export') | float)) }}"
+    unit_of_measurement: "KWH"
+
+  - name: "Power Consumption (daily)"
+    unique_id: power_consumption_daily
+    default_entity_id: sensor.power_consumption_daily
+    state: >
+      {% set consumption = ((states('sensor.self_consumption') | float)) %}
+      {% set price = state_attr('sensor.nordpool_kwh_dk1_dkk_2_035_025', 'average') %}
+      {% set cost = consumption * price %}
+      {{ cost }}
+    unit_of_measurement: "Kr"
+
+  - name: "Restaffald Collection"
+    unique_id: restaffald_collection
+    default_entity_id: sensor.restaffald_collection
+    state: "{{ states('sensor.restaffald_collection') }}"
+    device_class: timestamp
+
+  - name: "Glas, Metal, Hård Plast Collection"
+    unique_id: glas_metal_hard_plast_collection
+    default_entity_id: sensor.glas_metal_hard_plast_collection
+    state: "{{ states('sensor.glas_metal_hard_plast_collection') }}"
+    device_class: timestamp
+
+  - name: "Pap, Papir Collection"
+    unique_id: pap_papir_collection
+    default_entity_id: sensor.pap_papir_collection
+    state: "{{ states('sensor.pap_papir_collection') }}"
+    device_class: timestamp
+
+  - name: "Hourly Solar Production"
+    unique_id: hourly_solar_production
+    default_entity_id: sensor.hourly_solar_production
+    state: "{{ states('sensor.growatts_today_s_solar_energy') }}"
+    attributes:
+      00_01: "{{ state_attr('sensor.hourly_solar_production_00_01', 'value') }}"
+      01_02: "{{ state_attr('sensor.hourly_solar_production_01_02', 'value') }}"
+      02_03: "{{ state_attr('sensor.hourly_solar_production_02_03', 'value') }}"
+      03_04: "{{ state_attr('sensor.hourly_solar_production_03_04', 'value') }}"
+      04_05: "{{ state_attr('sensor.hourly_solar_production_04_05', 'value') }}"
+      05_06: "{{ state_attr('sensor.hourly_solar_production_05_06', 'value') }}"
+      06_07: "{{ state_attr('sensor.hourly_solar_production_06_07', 'value') }}"
+      07_08: "{{ state_attr('sensor.hourly_solar_production_07_08', 'value') }}"
+      08_09: "{{ state_attr('sensor.hourly_solar_production_08_09', 'value') }}"
+      09_10: "{{ state_attr('sensor.hourly_solar_production_09_10', 'value') }}"
+      10_11: "{{ state_attr('sensor.hourly_solar_production_10_11', 'value') }}"
+      11_12: "{{ state_attr('sensor.hourly_solar_production_11_12', 'value') }}"
+      12_13: "{{ state_attr('sensor.hourly_solar_production_12_13', 'value') }}"
+      13_14: "{{ state_attr('sensor.hourly_solar_production_13_14', 'value') }}"
+      14_15: "{{ state_attr('sensor.hourly_solar_production_14_15', 'value') }}"
+      15_16: "{{ state_attr('sensor.hourly_solar_production_15_16', 'value') }}"
+      16_17: "{{ state_attr('sensor.hourly_solar_production_16_17', 'value') }}"
+      17_18: "{{ state_attr('sensor.hourly_solar_production_17_18', 'value') }}"
+      18_19: "{{ state_attr('sensor.hourly_solar_production_18_19', 'value') }}"
+      19_20: "{{ state_attr('sensor.hourly_solar_production_19_20', 'value') }}"
+      20_21: "{{ state_attr('sensor.hourly_solar_production_20_21', 'value') }}"
+      21_22: "{{ state_attr('sensor.hourly_solar_production_21_22', 'value') }}"
+      22_23: "{{ state_attr('sensor.hourly_solar_production_22_23', 'value') }}"
+      23_00: "{{ state_attr('sensor.hourly_solar_production_23_00', 'value') }}"
+
+  - name: "Net Power Consumption"
+    unique_id: net_power_consumption
+    default_entity_id: sensor.net_power_consumption
+    state: "{{ states('sensor.power_consumed') | float - states('sensor.growatts_ac_power_to_grid_total') | float }}"
+    unit_of_measurement: "W"
+
+  - name: "is_restaffald_collection_tomorrow"
+    unique_id: is_restaffald_collection_tomorrow
+    default_entity_id: sensor.is_restaffald_collection_tomorrow
+    state: "{{ (as_datetime(states('sensor.restaffald_collection_2')) - timedelta(days=1)).strftime('%Y-%m-%d') == now().strftime('%Y-%m-%d') }}"
+
+  - name: "is_pap_papir_collection_tomorrow"
+    unique_id: is_pap_papir_collection_tomorrow
+    default_entity_id: sensor.is_pap_papir_collection_tomorrow
+    state: "{{ (as_datetime(states('sensor.pap_papir_collection_2')) - timedelta(days=1)).strftime('%Y-%m-%d') == now().strftime('%Y-%m-%d') }}"
+
+  - name: "is_glas_metal_hard_plast_collection_tomorrow"
+    unique_id: is_glas_metal_hard_plast_collection_tomorrow
+    default_entity_id: sensor.is_glas_metal_hard_plast_collection_tomorrow
+    state: "{{ (as_datetime(states('sensor.glas_metal_hard_plast_collection_2')) - timedelta(days=1)).strftime('%Y-%m-%d') == now().strftime('%Y-%m-%d') }}"

@@ -1,0 +1,4 @@
+- platform: nordpool
+  region: "DK1" # This can be skipped if you want Kr.sand
+  VAT: True
+

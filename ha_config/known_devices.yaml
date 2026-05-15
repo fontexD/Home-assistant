@@ -1,0 +1,105 @@
+
+oneplus_nord2_5g:
+  name: OnePlus Nord2 5G
+  mac: BT_D0:49:7C:FC:2E:F3
+  icon:
+  picture:
+  track: true
+
+oneplus_10_pro_5g:
+  name: OnePlus 10 Pro 5G
+  mac: BT_48:74:12:AB:A1:FC
+  icon:
+  picture:
+  track: true
+
+oneplus_8t:
+  name: OnePlus 8T
+  mac: BT_D0:49:7C:37:88:CC
+  icon:
+  picture:
+  track: true
+
+tpm191e:
+  name: TPM191E
+  mac: BT_E8:D0:FC:64:1F:2C
+  icon:
+  picture:
+  track: true
+
+oneplus_11_5g:
+  name: OnePlus 11 5G
+  mac: BT_30:BB:7D:C7:3C:72
+  icon:
+  picture:
+  track: true
+
+nero_tx_pro:
+  name: NERO-TX PRO
+  mac: BT_C2:09:16:A1:0C:21
+  icon:
+  picture:
+  track: true
+
+oneplus_nord_2t_5g:
+  name: OnePlus Nord 2T 5G
+  mac: BT_48:74:12:A0:9E:4E
+  icon:
+  picture:
+  track: true
+
+oneplus_nord2_5g_2:
+  name: OnePlus Nord2 5G
+  mac: BT_D0:49:7C:E7:3A:43
+  icon:
+  picture:
+  track: true
+
+oneplus_7:
+  name: OnePlus 7
+  mac: BT_98:09:CF:67:DC:B9
+  icon:
+  picture:
+  track: true
+
+doro6525:
+  name: DORO6525
+  mac: BT_E4:FB:8F:FB:AF:B5
+  icon:
+  picture:
+  track: true
+
+raunstrup:
+  name: RAUNSTRUP
+  mac: BT_E4:70:B8:FA:F4:5A
+  icon:
+  picture:
+  track: true
+
+oneplus_7tpro:
+  name: OnePlus 7TPro
+  mac: BT_48:01:C5:84:28:12
+  icon:
+  picture:
+  track: true
+
+oneplus_10_pro_5g_2:
+  name: OnePlus 10 Pro 5G
+  mac: BT_48:74:12:AB:96:EA
+  icon:
+  picture:
+  track: true
+
+oneplus_9_pro:
+  name: OnePlus 9 Pro
+  mac: BT_AC:5F:EA:FC:40:73
+  icon:
+  picture:
+  track: true
+
+oneplus_7t_pro:
+  name: OnePlus 7T Pro
+  mac: BT_48:01:C5:85:C2:16
+  icon:
+  picture:
+  track: true

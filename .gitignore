@@ -1,0 +1,9 @@
+ha_config/secrets.yaml
+ha_config/**/secrets*.yaml
+ha_config/home-assistant_v2.db*
+ha_config/*.db
+ha_config/*.log*
+ha_config/.storage/
+ha_config/tts/
+ha_config/tmp/
+ha_config/media/

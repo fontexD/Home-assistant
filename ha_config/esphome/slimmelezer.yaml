@@ -1,0 +1,15 @@
+substitutions:
+  name: slimmelezer
+packages:
+  zuidwijk.slimmelezer: github://zuidwijk/dsmr/slimmelezer.yaml@main
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+api:
+  encryption:
+    key: ci3bN8t1AWthCm7uG5d+cUx+BMPnod0wpPDE1YoIOQE=
+
+
+wifi:
+  ssid: fontex_iot
+  password: Opgash192

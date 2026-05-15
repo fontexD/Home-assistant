@@ -1,0 +1,20 @@
+mqtt:
+  host: 10.0.0.2
+  user: MQTT
+  password: Datait2022!!
+    
+frigate:
+  url: http://192.168.10.62:31001
+  attempts:
+    # number of times double take will request a frigate latest.jpg for facial recognition
+    latest: 10
+    # number of times double take will request a frigate snapshot.jpg for facial recognition
+    snapshot: 10
+    # process frigate images from frigate/+/person/snapshot topics
+    mqtt: true
+    # add a delay expressed in seconds between each detection loop
+    delay: 60
+    
+detectors:
+  deepstack:
+    url: http://192.168.10.62:32246

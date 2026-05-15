@@ -1,0 +1,11 @@
+lowest_three_hour_sum:
+  alias: Calculate Lowest Three Hour Sum
+  sequence:
+  - service: python_script.calculate_lowest_three_hour_sum
+'1697302311095':
+  alias: Create Input Datetime Helper
+  sequence:
+  - service: input_datetime.set_datetime
+    data:
+      entity_id: input_datetime.growatthus_start_time
+      time: 08:00:00

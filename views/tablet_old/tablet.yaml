@@ -1,0 +1,1964 @@
+kiosk_mode:
+  entity_settings:
+    - entity:
+        input_boolean.fullscreen_mode_pc: 'on'
+      hide_sidebar: false
+      hide_header: false
+sidebar:
+  hideTopMenu: false
+  hideHassSidebar: false
+  width:
+    desktop: 25
+    mobile: 25
+    tablet: 25
+  digitalClock: false
+  digitalClockWithSeconds: false
+  clock: false
+  date: false
+  dateFormat: dddd, DD. MMMM YYYY
+  sidebarMenu:
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-hjem
+      name: Hjem
+      active: true
+      icon: mdi:mushroom-off
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-varelse
+      name: Værelse
+      active: true
+      icon: mdi:bed
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-stue
+      name: Stue
+      active: true
+      icon: mdi:sofa
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-sovevarelse
+      name: Soveværelse
+      active: true
+      icon: mdi:bed-king-outline
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-tkokken
+      name: Køkken
+      active: true
+      icon: mdi:fridge-outline
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-strom
+      name: Strøm
+      active: true
+      icon: mdi:flash
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-bil
+      name: Bil
+      active: true
+      icon: mdi:car
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-el
+      name: El
+      active: true
+      icon: mdi:power-plug
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-batteri
+      name: Batteri
+      active: true
+      icon: mdi:battery-outline
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-kamera
+      name: Kamera
+      active: true
+      icon: mdi:camera
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-solceller
+      name: Solceller
+      active: true
+      icon: mdi:solar-panel
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-Støvsuger
+      name: Støvsuger
+      active: true
+      icon: mdi:robot-vacuum
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-eloverblik
+      name: Eloverblik
+      active: true
+      icon: mdi:chart-line
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-gang
+      name: Gang
+      active: true
+      icon: mdi:stairs
+  template: |
+    <li id="greeting">
+      {% if now().hour < 5 %} God nat {{'\U0001F634'}}
+      {% elif now().hour < 9 %} God morgen {{'\u2615\uFE0F'}}
+      {% elif now().hour < 18 %} God dag {{'\U0001F44B\U0001F3FB'}}
+      {% else %} God aften {{'\U0001F44B\U0001F3FB'}}{% endif %}
+    </li>
+    <div class="status">
+      {% if states('sensor.zahler_lights_gesamt') | float == 0 %}
+        <li class="lights-off">Der er ingen lamper tændt!</li>
+      {% elif states('sensor.zahler_lights_gesamt') | float == 1 %}
+        <li class="one-light">Der er én lampe tændt!</li>
+      {% else %}
+        <li class="multiple-lights">Der er {{states('sensor.zahler_lights_gesamt')}} lamper tændt!</li>
+      {% endif %}
+
+      {% if states('sensor.zahler_schalter_gesamt') | float == 0 %}
+        <li class="switches-off">Der er ingen kontakter tændt!</li>
+      {% elif states('sensor.zahler_schalter_gesamt') | float == 1 %}
+        <li class="one-switch">Der er én kontakt tændt!</li>
+      {% else %}
+        <li class="multiple-switches">Der er {{states('sensor.zahler_schalter_gesamt')}} kontakter tændt!</li>
+      {% endif %}
+    </div>
+  bottomCard:
+    type: horizontal-stack
+    cardOptions:
+      cards:
+        - type: custom:mushroom-person-card
+          entity: person.helle
+          icon_type: entity-picture
+          primary_info: name
+          name: Pio
+          secondary_info: state
+        - type: custom:mushroom-person-card
+          entity: person.peter
+          icon_type: entity-picture
+          primary_info: name
+          name: Pao
+          secondary_info: state
+  topCard:
+    type: custom:vertical-stack-in-card
+    card_mod:
+      style: |
+        ha-card {
+          border: none;
+          background: transparent;
+        }
+    cardOptions:
+      cards:
+        - type: custom:clock-weather-card
+          entity: weather.forecast_brabrand
+          forecast_rows: 2
+          hide_clock: true
+          hide_date: true
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent;
+              }
+        - type: custom:button-card
+          entity: input_boolean.fullscreen_mode_pc
+          show_state: false
+          show_icon: true
+          icon: mdi:arrow-expand
+          layout: icon_name
+          name: Fuldskærm
+          size: 15%
+          styles:
+            card:
+              - background: transparent
+    cardStyle: |
+      :host {
+        width: 100%;
+      }
+      ha-card {
+        border: none;
+        background: transparent;
+      }
+  style: |
+    :host {
+        --sidebar-background: var(--primary-background-color);
+        --sidebar-text-color: var(--primary-text-color);
+        --border-radius: 5px;
+        --face-color: var(--primary-text-color);
+        --face-border-color: var(--primary-text-color);
+        --clock-hands-color: var(--primary-background-color);
+        --clock-seconds-hand-color: var(--primary-color);
+        --clock-middle-background: var(--primary-text-color);
+        --clock-middle-border: var(--primary-background-color);
+        box-shadow: inset -19px -1px 5px -14px var(--divider-color);
+        border-radius: 15px 0px 0px 15px;
+    }
+    #customSidebar {
+        z-index: 9999!important;
+    }
+    .sidebarMenu li {
+        line-height: 35px!important;
+        color: var(--primary-text-color)!important;
+    }
+    .bottom {
+        width: 100% !important;
+    }
+    .sidebarMenu li.active {
+        background-color: var(--primary-color)!important;
+        border-radius: 0px !important;
+        color: var(--primary-text-color) !important;
+        font-weight: bold !important;
+    }
+    .sidebarMenu li.active ha-icon {
+        color: var(--primary-text-color) !important;
+    }
+    .clock {
+        width: 60% !important;
+        padding-top: 60% !important;
+        margin: -10px 50px 10px 50px !important;
+    }
+    .digitalClock {
+        padding-bottom: 5px;
+        padding-top: 15px;
+        color: var(--primary-text-color) !important;
+        opacity: 0.6;
+        font-size: 60px !important;
+        font-weight: 500 !important;
+        font-family: Arial Rounded MT;
+        letter-spacing: -0.05vw !important;
+        text-align: center;
+    }
+    .date {
+        padding-bottom: 10px;
+        padding-top: 10px;
+        color: var(--primary-text-color);
+        opacity: 0.6;
+        font-size: 25px;
+        font-weight: 300;
+        text-align: center;
+        letter-spacing: -0.05vw;
+    }
+    .template li {
+        color: var(--primary-text-color) !important;
+        font-size: 1.1vw !important;
+        font-weight: 200 !important;
+        opacity: 0.6;
+        letter-spacing: -0.05vw !important;
+        text-align: center;
+        margin-bottom: 10px !important;
+    }
+    .template li.one-light {
+        color: orange !important;
+        font-weight: bold !important;
+    }
+    .template li.multiple-lights {
+        color: red !important;
+        font-weight: bold !important;
+    }
+    .template li.one-switch {
+        color: orange !important;
+        font-weight: bold !important;
+    }
+    .template li.multiple-switches {
+        color: red !important;
+        font-weight: bold !important;
+    }
+    .status {
+        padding: 10px;
+        background-color: var(--sidebar-background);
+        border-radius: var(--border-radius);
+        text-align: center;
+    }
+swipe_nav:
+  wrap: true
+  enable_mouse_swipe: true
+  animate: fade
+  animate_duration: 300
+  prevent_default: false
+  swipe_amount: 10
+views:
+  - theme: Backend-selected
+    title: Hjem
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - decimals: 1
+            icon: mdi:battery
+            entities:
+              - color: blue
+                entity: sensor.skur_battery_soc
+                name: Skur
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: red
+                entity: sensor.growatts_battery_soc
+                name: Hus
+                show_points: true
+                show_state: true
+                show_indicator: true
+                y_axis: secondary
+            hour24: true
+            hours_to_show: 12
+            line_width: 3
+            lower_bound_secondary: 0
+            name: Batterier
+            points_per_hour: 100
+            show:
+              extrema: false
+              labels: false
+              labels_secondary: false
+              smoothing: false
+            type: custom:mini-graph-card
+      - show_name: true
+        show_icon: true
+        type: custom:button-card
+        tap_action:
+          action: toggle
+        entity: switch.kaffe
+        theme: Mushroom Square
+        icon: mdi:coffee-maker
+        icon_height: 6px
+        name: kaffe
+        hold_action:
+          action: 'on'
+        show_state: false
+        state:
+          - value: 'on'
+            color: red
+            spin: 'on'
+          - value: 'off'
+            color: green
+      - type: entities
+        entities:
+          - entity: sensor.movement_kattelem
+            name: Kattelem aktiv
+        title: Nuggie kommer hjem
+      - cards:
+          - decimals: 1
+            icon: mdi:solar-panel-large
+            entities:
+              - color: '#00ff00'
+                entity: sensor.solceller_total
+                name: Total
+                show_points: false
+                show_state: false
+                show_graph: false
+                show_indicator: true
+              - color: red
+                entity: sensor.growatts_today_s_solar_energy
+                name: Hus Growatt
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: blue
+                entity: sensor.skur_today_s_solar_energy
+                name: Skur Growatt
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: green
+                entity: sensor.delta_daglig
+                name: Hus Delta
+                show_points: true
+                show_state: true
+                show_indicator: true
+                y_axis: secondary
+            hour24: true
+            hours_to_show: 12
+            line_width: 3
+            lower_bound_secondary: 0
+            name: Solceller Produktion 24 Timer
+            points_per_hour: 1
+            show:
+              extrema: true
+              labels: false
+              labels_secondary: false
+              smoothing: false
+            type: custom:mini-graph-card
+        type: horizontal-stack
+      - decimals: 1
+        icon: mdi:power-plug-outline
+        entities:
+          - color: Red
+            entity: sensor.growatts_today_s_grid_import
+            name: Import
+            show_points: true
+            show_state: true
+            show_indicator: true
+            y_axis: secondary
+          - color: Green
+            entity: sensor.growatts_today_s_grid_export
+            name: Export
+            show_points: true
+            show_state: true
+            show_indicator: true
+            y_axis: secondary
+        hour24: true
+        hours_to_show: 12
+        line_width: 3
+        lower_bound_secondary: 0
+        name: Import/Export
+        points_per_hour: 100
+        show:
+          extrema: false
+          labels: false
+          labels_secondary: false
+          smoothing: false
+        type: custom:mini-graph-card
+      - initial_view: dayGridMonth
+        type: calendar
+        entities:
+          - calendar.hellefonv_gmail_com
+          - calendar.pfonvig_gmail_com
+      - type: horizontal-stack
+        cards:
+          - show_state: true
+            show_name: false
+            camera_view: auto
+            type: picture-entity
+            entity: sensor.restaffald_mad
+            image: /local/mad.png
+            name: ''
+          - type: picture-entity
+            entity: sensor.pap_papir
+            image: /local/pap.png
+            name: Pap Papir
+            show_state: true
+            show_name: false
+          - show_state: true
+            show_name: false
+            camera_view: auto
+            type: picture-entity
+            entity: sensor.glas_metal_hard_plast
+            image: /local/metal.png
+            name: GLas Metal HårdPlast
+      - type: horizontal-stack
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              target:
+                entity_id:
+                  - automation.nuggiebar_feed
+              data:
+                skip_condition: true
+            entity: sensor.0x54ef4410007145f2_feeding_source
+            icon: mdi:cat
+            hold_action:
+              action: none
+            show_state: false
+            name: Nuggiebar
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              target:
+                entity_id: automation.muggiebar
+              data:
+                skip_condition: true
+            entity: automation.muggiebar
+            icon: mdi:dog
+            hold_action:
+              action: none
+            show_state: false
+    path: tablet-hjem
+  - title: Gang
+    path: tablet-gang
+    subview: false
+    badges: []
+    cards:
+      - type: button
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data:
+            entity_id: automation.muggie_kommer_hjem
+          haptic: success
+        name: MuggieBar
+        icon: mdi:cat
+      - type: area
+        area: gang
+      - type: entities
+        entities:
+          - entity: sensor.hue_motion_sensor_1_illuminance_2
+            name: Illuminance
+          - entity: binary_sensor.hue_motion_sensor_1_motion_2
+            name: Motion
+          - entity: sensor.hue_motion_sensor_1_temperature_2
+            name: Temperature
+        title: Hue motion sensor gang
+      - type: entities
+        entities:
+          - entity: light.gang_1
+          - entity: light.gang_2
+          - entity: light.gang_3
+          - entity: light.gang_4
+          - entity: light.gang_5
+          - entity: light.gang_6
+          - entity: light.gang_7
+          - entity: light.gang_8
+        state_color: true
+        theme: ios-dark-mode-blue-red-alternative
+        title: Lys gang
+      - type: entities
+        entities:
+          - entity: sensor.hue_motion_sensor_1_belysningsstyrke
+            name: Belysningsstyrke
+          - entity: binary_sensor.hue_motion_sensor_1_bevaegelse
+            name: Bevægelse
+          - entity: sensor.hue_motion_sensor_1_temperatur
+            name: Temperatur
+        title: Toilet
+  - theme: Backend-selected
+    title: Værelse
+    path: tablet-varelse
+    icon: ''
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - sensor.canon_black
+      - type: entities
+        entities:
+          - entity: sensor.canon_ix6800_series_black_bk
+          - entity: sensor.canon_ix6800_series_black_pgbk
+          - entity: sensor.canon_ix6800_series_cyan
+          - entity: sensor.canon_ix6800_series_magenta
+          - entity: sensor.canon_ix6800_series_yellow
+      - type: area
+        area: vaerelse
+      - type: entities
+        entities:
+          - entity: select.x7_smart_doorbell_night_vision
+            name: Night vision
+          - entity: select.x7_smart_doorbell_record_mode
+            name: Record mode
+          - entity: switch.x7_smart_doorbell_video_recording
+            name: Video recording
+        title: X7 Smart Doorbell
+      - type: entities
+        entities:
+          - cover.vaerelse
+        title: Værelse
+      - type: entities
+        entities:
+          - binary_sensor.muggie_occupancy
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          target:
+            entity_id:
+              - automation.nuggiebar_feed
+          data:
+            skip_condition: true
+        entity: switch.0x54ef4410007145f2
+        icon: mdi:cat
+        hold_action:
+          action: none
+  - theme: Backend-selected
+    title: Stue
+    path: tablet-stue
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.temperatur_kaeldergang_temperature
+            name: Fjernvarme retur
+          - entity: sensor.temperatur_kaeldergang_humidity
+            name: Luftfugtighed
+          - entity: sensor.temperatur_kokken_temperature
+            name: Køkken
+          - entity: sensor.temperatur_kokken_humidity
+            name: Luftfugtighed
+          - entity: sensor.hue_motion_sensor_1_temperature
+            name: Stue
+          - entity: sensor.hue_motion_sensor_1_temperature_2
+            name: Gang første sal
+          - entity: sensor.0xa4c138d9fdc085de_temperature
+            name: Soveværelse
+          - entity: sensor.0xa4c138d9fdc085de_humidity
+            name: Luftfugtighed
+          - entity: sensor.hue_motion_sensor_1_temperatur
+        title: 'Temperatur '
+        theme: ios-dark-mode-blue-red-alternative
+      - type: custom:gallery-card
+        menu_alignment: Hidden
+        show_reload: false
+        maximum_files: '10'
+        recursive: true
+        entities:
+          - media-source://media_source/local/billeder/homeassist/
+        maximum_files_per_entity: true
+        slideshow_timer: '60'
+      - type: custom:mushroom-vacuum-card
+        entity: vacuum.fru_robert
+        name: Fru Robert
+        commands:
+          - start_pause
+          - stop
+          - locate
+          - clean_spot
+        layout: horizontal
+      - type: media-control
+        entity: media_player.heos_2
+        theme: ios-dark-mode-blue-red-alternative
+      - type: entities
+        entities:
+          - entity: light.spiral
+            icon: mdi:chandelier
+          - entity: light.spot_1_stue
+            name: Spot 1
+          - entity: light.spot_2
+            icon: mdi:lightbulb-spot
+          - entity: light.bordlampe
+          - entity: light.strikkelampe
+        state_color: true
+        title: Lys
+        theme: ios-dark-mode-blue-red-alternative
+      - type: entities
+        entities:
+          - entity: cover.stuerullegardin
+          - entity: sensor.stue_fjernbetjening_batteri
+          - entity: sensor.stuerullegardin_batteri
+        title: Gardin
+  - theme: Backend-selected
+    title: Soveværelse
+    path: tablet-sovevarelse
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: cover.braendeskur
+          - entity: sensor.braendeskur_batteri
+          - entity: cover.skov
+          - entity: sensor.skov_batteri
+      - type: media-control
+        entity: media_player.sovevaerelse
+      - type: horizontal-stack
+        cards: []
+      - type: area
+        area: sovevaerelse
+      - type: entities
+        entities:
+          - entity: light.hue_go_2
+          - entity: light.hue_go_1
+      - type: entities
+        entities:
+          - entity: sensor.mi_smart_scale_cf97_mass_non_stabilized
+            icon: mdi:weight-kilogram
+            name: Pio
+          - entity: sensor.mi_smart_scale_cf97_mass
+            name: Pao
+            icon: mdi:weight-kilogram
+        title: Vægt
+  - theme: Backend-selected
+    title: Køkken
+    path: tablet-tkokken
+    badges: []
+    cards:
+      - type: horizontal-stack
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            entity: light.flowerpot1
+            name: Flowerpot1
+            icon: mdi:ceiling-light
+            icon_height: 40px
+            theme: Mushroom Square
+            show_state: true
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            entity: light.flowerpot2
+            name: Flowerpot2
+            icon: mdi:ceiling-light
+            icon_height: 40px
+            theme: Mushroom Square
+            show_state: true
+      - show_name: true
+        show_icon: true
+        type: custom:button-card
+        tap_action:
+          action: toggle
+        entity: light.panton
+        theme: Mushroom Square
+        icon: mdi:silverware-fork-knife
+        icon_height: 40px
+        name: Spisebordslampe
+        hold_action:
+          action: 'on'
+        show_state: false
+        state:
+          - value: 'on'
+            color: red
+            spin: 'on'
+          - value: 'off'
+            color: green
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: toggle
+        entity: media_player.mini
+        name: Mini
+        icon_height: 40px
+        hold_action:
+          action: none
+        icon: mdi:google
+      - type: markdown
+        content: |-
+          Mandag  : Frikadeller
+          Tirsdag : Skildpadde og boller i selleri
+          Onsdag  : boller i selleri kart. mos pølser
+          Torsdag : 
+          fredag  : 
+          lørdag  : 
+          søndag  : 
+        title: Menu uge 9
+        theme: Mushroom
+      - type: horizontal-stack
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            entity: light.hygge_1
+            icon: mdi:light-flood-up
+            icon_height: 40px
+            name: Hygge 1
+            theme: Mushroom Square
+            show_state: true
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            entity: light.hygge_2
+            icon: mdi:light-flood-down
+            icon_height: 40px
+            name: Hygge 2
+            theme: Mushroom Square
+            show_state: true
+      - type: entities
+        entities:
+          - entity: light.paere_6
+          - entity: light.paere_7
+          - entity: light.paere_8
+        state_color: true
+        title: Madlavning
+        theme: ios-dark-mode-blue-red-alternative
+      - type: horizontal-stack
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              target:
+                entity_id:
+                  - automation.nuggiebar_feed
+              data:
+                skip_condition: true
+            entity: sensor.0x54ef4410007145f2_feeding_size
+            icon: mdi:cat
+            hold_action:
+              action: none
+            show_state: false
+            name: Nuggiebar
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              target:
+                entity_id: automation.muggiebar
+              data:
+                skip_condition: true
+            entity: automation.muggiebar
+            icon: mdi:dog
+            hold_action:
+              action: none
+            show_state: false
+      - type: entities
+        entities:
+          - entity: cover.storrullegardin
+          - entity: cover.akaciehaven
+          - entity: sensor.akaciehaven_batteri
+        state_color: true
+        title: Rullegardin
+      - type: entities
+        entities:
+          - entity: sensor.temperatur_kokken_temperature
+            name: Køkken
+          - entity: sensor.temperatur_kokken_humidity
+            name: Luftfugtighed
+      - type: entities
+        entities:
+          - entity: light.paere_1
+          - entity: light.paere_2
+          - entity: light.paere_3
+          - entity: light.paere_4
+          - entity: light.paere_5
+          - entity: light.paere_6
+          - entity: light.paere_7
+          - entity: light.paere_8
+        state_color: true
+        title: Lys
+        theme: ios-dark-mode-blue-red-alternative
+      - type: shopping-list
+        title: Husk !
+        theme: Mushroom Shadow
+      - type: custom:gallery-card
+        menu_alignment: Hidden
+        show_reload: false
+        maximum_files: '10'
+        recursive: true
+        entities:
+          - media-source://media_source/local/billeder/homeassist/
+        maximum_files_per_entity: true
+        slideshow_timer: '60'
+  - theme: Backend-selected
+    title: Strøm
+    path: tablet-strom
+    icon: mdi:home-lightning-bolt
+    badges: []
+    cards:
+      - type: area
+        area: sovevaerelse
+      - type: gauge
+        entity: sensor.growatts_battery_soc
+        needle: true
+        min: 10
+        severity:
+          green: 70
+          yellow: 40
+          red: 10
+        max: 100
+        name: Hus aktuelt
+      - type: vertical-stack
+        cards: []
+      - type: entities
+        entities:
+          - entity: sensor.growatts_battery_discharge_power
+            name: Batteri afladning
+            icon: mdi:battery-30
+          - entity: sensor.growatts_battery_charge_power
+            name: Batteri opladning
+            icon: mdi:battery-charging-60
+          - entity: sensor.growatts_battery_soc
+            name: Batteri aktuel
+        title: Batteri hus
+      - type: entities
+        entities:
+          - entity: sensor.growatts_total_solar_energy
+            name: Produktion total
+            icon: mdi:weather-sunny
+          - entity: sensor.growatts_ac_power_to_grid_total_kw
+            name: Export til grid
+            icon: mdi:transmission-tower-import
+          - entity: sensor.combined_shelly
+            name: 3 Faser
+          - entity: sensor.growatts_total_house_load
+            name: Import fra grid
+        title: Solceller hus
+        theme: ios-dark-mode-blue-red-alternative
+      - type: entities
+        entities:
+          - entity: sensor.skur_pv_power_total
+            name: Solceller
+            icon: mdi:solar-power-variant
+          - entity: sensor.skur_battery_soc
+            name: Batteri
+            icon: mdi:battery
+        title: Skur aktuelt
+      - decimals: 1
+        icon: mdi:solar-panel-large
+        entities:
+          - color: red
+            entity: sensor.solceller_total_aktuel
+            name: Hus Growatt
+            show_points: false
+            show_state: false
+            show_graph: false
+            show_indicator: false
+          - color: red
+            entity: sensor.growatts_pv_power_total_kw
+            name: Hus Growatt
+            show_points: true
+            show_state: true
+            show_indicator: true
+          - color: blue
+            entity: sensor.skur_pv_power_total_kw
+            name: Skur Growatt
+            show_points: true
+            show_state: true
+            show_indicator: true
+          - color: green
+            entity: sensor.delta_produktion_aktuel
+            name: Hus Delta
+            show_points: true
+            show_state: true
+            show_indicator: true
+            y_axis: secondary
+        hour24: true
+        hours_to_show: 12
+        line_width: 3
+        lower_bound_secondary: 0
+        name: Solceller Aktuel
+        points_per_hour: 100
+        show:
+          extrema: false
+          labels: false
+          labels_secondary: false
+          smoothing: false
+        type: custom:mini-graph-card
+      - cards:
+          - decimals: 1
+            icon: mdi:solar-panel-large
+            entities:
+              - color: '#00ff00'
+                entity: sensor.solceller_total
+                name: Total
+                show_points: false
+                show_state: false
+                show_graph: false
+                show_indicator: true
+              - color: red
+                entity: sensor.growatts_today_s_solar_energy
+                name: Hus Growatt
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: blue
+                entity: sensor.skur_today_s_solar_energy
+                name: Skur Growatt
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: green
+                entity: sensor.delta_daglig
+                name: Hus Delta
+                show_points: true
+                show_state: true
+                show_indicator: true
+                y_axis: secondary
+            hour24: true
+            hours_to_show: 12
+            line_width: 3
+            lower_bound_secondary: 0
+            name: Solceller Produktion 24 Timer
+            points_per_hour: 100
+            show:
+              extrema: true
+              labels: false
+              labels_secondary: false
+              smoothing: false
+            type: custom:mini-graph-card
+        type: horizontal-stack
+      - decimals: 1
+        icon: mdi:power-plug-outline
+        entities:
+          - color: Red
+            entity: sensor.growatts_today_s_grid_import
+            name: Import
+            show_points: true
+            show_state: true
+            show_indicator: true
+            y_axis: secondary
+          - color: Green
+            entity: sensor.growatts_today_s_grid_export
+            name: Export
+            show_points: true
+            show_state: true
+            show_indicator: true
+            y_axis: secondary
+        hour24: true
+        hours_to_show: 12
+        line_width: 3
+        lower_bound_secondary: 0
+        name: Import/Export
+        points_per_hour: 100
+        show:
+          extrema: false
+          labels: false
+          labels_secondary: false
+          smoothing: false
+        type: custom:mini-graph-card
+      - type: entities
+        entities:
+          - sensor.energi_data_service
+        title: Aktuel strømpris
+  - theme: Backend-selected
+    title: Solceller bil
+    path: tablet-bil
+    icon: mdi:car-electric
+    badges: []
+    cards:
+      - type: area
+        area: skur
+      - type: entities
+        entities:
+          - entity: input_datetime.both_date_and_time
+            name: Start Tid
+            icon: mdi:timer
+          - entity: input_number.office
+            name: Opladning i
+          - entity: sensor.office_time_remaining
+            name: Tid Tilbage
+            icon: mdi:timeline-clock
+          - entity: input_boolean.office_timer
+            name: Bil Lader
+            icon: mdi:onepassword
+        title: Bil Opladning
+      - type: gauge
+        entity: sensor.skur_battery_soc
+        name: Skur aktuelt
+        needle: true
+        severity:
+          green: 70
+          yellow: 40
+          red: 10
+        theme: ios-dark-mode-blue-red
+        min: 10
+        max: 100
+      - type: entities
+        entities:
+          - entity: sensor.skur_battery_discharge_power
+            name: Batteri afladning
+            icon: mdi:battery-charging-60
+          - entity: sensor.skur_battery_charge_power
+            name: Batteri opladning
+            icon: mdi:battery-charging-100
+          - entity: sensor.skur_battery_soc
+            name: Batteri aktuelt
+            icon: mdi:battery
+        title: Skur batteri
+        theme: ios-dark-mode-blue-red-alternative
+      - type: horizontal-stack
+        title: null
+        cards:
+          - square: false
+            columns: 1
+            type: grid
+            cards:
+              - square: false
+                columns: 1
+                type: grid
+                cards:
+                  - type: custom:stack-in-card
+                    cards:
+                      - type: custom:apexcharts-card
+                        chart_type: radialBar
+                        series:
+                          - entity: sensor.skur_battery_soc
+                            color: green
+                            max: 100
+                            show:
+                              legend_value: false
+                        apex_config:
+                          plotOptions:
+                            radialBar:
+                              offsetY: 0
+                              startAngle: -90
+                              endAngle: 90
+                              margin: 100
+                              hollow:
+                                size: 70%
+                              dataLabels:
+                                name:
+                                  show: false
+                                value:
+                                  show: false
+                              track:
+                                strokeWidth: 90%
+                                margin: 0
+                          fill:
+                            type: gradient
+                            gradient:
+                              shade: light
+                              type: horizontal
+                              shadeIntensity: 0.4
+                              inverseColors: false
+                              opacityFrom: 1
+                              opacityTo: 1
+                              stops:
+                                - 0
+                                - 50
+                                - 53
+                                - 91
+                          legend:
+                            show: false
+                          chart:
+                            height: 240
+                      - type: custom:mushroom-template-card
+                        secondary: >-
+                          {% set sensor =
+                          states('sensor.lokal_batteri_opladning')|float %}
+
+                          {% set sensor1 =
+                          states('sensor.lokal_batteri_afladning') %}
+
+                          {% if (sensor == 0.0) %}
+
+                          Aflader {{ sensor1 }}Kw
+
+                          {% elif (sensor != 0.0) %}
+
+                          lader {{ sensor }}KW
+
+                          {% endif %}
+                        primary: |
+                          {{ states('sensor.skur_battery_soc')|float }}%
+                        layout: vertical
+                        card_mod:
+                          style: |
+                            ha-card {
+                              margin-top: -80px;
+                              width: 140px;
+                              margin-left: auto;
+                              margin-right: auto;
+                              border: 0px
+                            }
+      - type: entities
+        entities:
+          - entity: sensor.skur_pv_power_total
+            name: Solceller aktuel
+            icon: mdi:solar-power-variant
+          - entity: sensor.skur_total_house_load
+            name: Forbrug aktuel
+          - entity: sensor.skur_today_s_solar_energy
+            name: Produktion daglig
+            icon: mdi:solar-power
+          - entity: sensor.skur_total_solar_energy
+            name: Produktion total
+            icon: mdi:solar-power
+          - entity: sensor.skur_ac_power_to_grid_total
+            name: Export til grid
+        title: Skur solceller
+      - type: entities
+        entities:
+          - entity: sensor.growatts_pv_power_total
+            name: Solceller
+            icon: mdi:solar-power-variant
+          - entity: sensor.delta_produktion_aktuel
+            name: Delta aktuelt
+            icon: mdi:solar-power-variant-outline
+          - entity: sensor.growatts_battery_soc
+            name: Batteri
+        title: Hus aktuelt
+  - title: el
+    path: tablet-el
+    cards:
+      - type: custom:sunsynk-power-flow-card
+        cardstyle: lite
+        show_solar: true
+        battery:
+          energy: 12000
+          show_daily: true
+          show_remaining_energy: true
+          shutdown_soc: 10
+          invert_power: true
+          auto_scale: true
+          animate: false
+          linear_gradient: true
+          dynamic_colour: true
+          show_absolute: true
+          hide_soc: true
+        solar:
+          show_daily: true
+          mppts: 3
+          auto_scale: true
+          pv1_name: Hus
+          pv2_name: Skur
+          pv3_name: Delta
+        load:
+          show_daily: true
+          load1_icon: ''
+          essential_name: Hus
+          auto_scale: false
+          dynamic_colour: true
+          invert_load: false
+          dynamic_icon: false
+          show_aux: false
+        grid:
+          show_daily_buy: true
+          show_daily_sell: true
+          show_nonessential: false
+          load1_icon: ''
+          grid_name: Aura
+          invert_grid: true
+          auto_scale: true
+          show_absolute: true
+        entities:
+          use_timer_248: switch.sunsynk_toggle_system_timer
+          priority_load_243: switch.sunsynk_toggle_priority_load
+          inverter_voltage_154: sensor.growatts_grid_voltage
+          load_frequency_192: sensor.growatts_grid_frequency
+          inverter_current_164: sensor.growatts_grid_current
+          inverter_power_175: sensor.solceller_total_aktuel
+          grid_connected_status_194: binary_sensor.sunsynk_grid_connected_status
+          inverter_status_59: sensor.sunsynk_overall_state
+          day_battery_charge_70: sensor.combined_battery_charge_power
+          day_battery_discharge_71: sensor.combined_battery_discharge_power
+          battery_voltage_183: sensor.growatts_battery_voltage
+          battery_soc_184: sensor.combined_battery_soc
+          battery_power_190: sensor.combined_battery_power
+          battery_current_191: sensor.battery_current
+          grid_power_169: sensor.sunsynk_grid_power
+          day_grid_import_76: sensor.growatts_today_s_grid_import
+          day_load_energy_84: Total Energy Usage
+          nonessential_power: none
+          aux_power_166: sensor.sunsynk_aux_power
+          day_pv_energy_108: sensor.solceller_total
+          pv2_power_187: sensor.skur_pv_power_total
+          pv1_voltage_109: sensor.growatts_pv_voltage_1
+          pv1_current_110: sensor.growatts_pv_current_1
+          pv2_voltage_111: sensor.skur_pv_voltage_1
+          pv2_current_112: sensor.skur_pv_current_1
+          pv1_power_186: sensor.growatts_pv_power_total
+          pv3_power_188: sensor.delta_produktion_aktuel
+          day_grid_export_77: sensor.growatts_today_s_grid_export
+          grid_voltage: sensor.shelly_maaler_channel_b_voltage
+          grid_ct_power_total: sensor.growatts_ac_power_to_grid_total
+          essential_power: sensor.house_power_usage
+          grid_ct_power_172: sensor.growatts_ac_power_to_grid_total
+        card_height: '640'
+        card_width: '480'
+        large_font: true
+        show_battery: true
+        show_grid: true
+        dynamic_line_width: false
+        inverter:
+          three_phase: false
+          modern: false
+          autarky: 'no'
+          model: growatt
+          colour:
+            - 39
+            - 176
+            - 73
+          auto_scale: true
+        panel_mode: false
+    type: panel
+  - theme: Backend-selected
+    title: El rum
+    path: tablet-eloverblik
+    icon: ''
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.eloverblik_energy_total
+          - entity: sensor.eloverblik_monthly_statistics
+          - entity: sensor.eloverblik_energy_total_year
+            name: Forbrug dette år
+        title: El for 2 dage siden
+      - type: custom:apexcharts-card
+        graph_span: 2h
+        header:
+          show: true
+          title: Strømforbrug
+          show_states: true
+          colorize_states: true
+        yaxis:
+          - id: watt
+        series:
+          - entity: sensor.total_sensor
+            name: Watt
+            data_generator: ''
+            yaxis_id: W
+      - type: entities
+        entities:
+          - sensor.shelly_maaler_channel_a_power
+          - sensor.shelly_maaler_channel_b_power
+          - sensor.shelly_maaler_channel_c_power
+      - type: entities
+        entities:
+          - entity: sensor.eloverblik_energy_total
+            name: 'El for 2 dage siden '
+          - entity: sensor.eloverblik_energy_0_1
+          - entity: sensor.eloverblik_energy_1_2
+          - entity: sensor.eloverblik_energy_2_3
+          - entity: sensor.eloverblik_energy_3_4
+          - entity: sensor.eloverblik_energy_4_5
+          - entity: sensor.eloverblik_energy_5_6
+          - entity: sensor.eloverblik_energy_6_7
+          - entity: sensor.eloverblik_energy_7_8
+          - entity: sensor.eloverblik_energy_8_9
+          - entity: sensor.eloverblik_energy_9_10
+          - entity: sensor.eloverblik_energy_10_11
+          - entity: sensor.eloverblik_energy_11_12
+          - entity: sensor.eloverblik_energy_12_13
+          - entity: sensor.eloverblik_energy_13_14
+          - entity: sensor.eloverblik_energy_14_15
+          - entity: sensor.eloverblik_energy_15_16
+          - entity: sensor.eloverblik_energy_16_17
+          - entity: sensor.eloverblik_energy_17_18
+          - entity: sensor.eloverblik_energy_18_19
+          - entity: sensor.eloverblik_energy_19_20
+          - entity: sensor.eloverblik_energy_20_21
+          - entity: sensor.eloverblik_energy_21_22
+          - entity: sensor.eloverblik_energy_22_23
+          - entity: sensor.eloverblik_energy_23_24
+        state_color: false
+      - type: entities
+        entities:
+          - sensor.energi_data_service
+        title: Aktuel strømpris
+  - theme: Backend-selected
+    title: Batteri
+    path: tablet-batteri
+    icon: mdi:battery-plus-variant
+    cards:
+      - type: horizontal-stack
+        title: Batteri hus
+        cards:
+          - square: false
+            columns: 1
+            type: grid
+            cards:
+              - square: false
+                columns: 1
+                type: grid
+                cards:
+                  - type: custom:stack-in-card
+                    cards:
+                      - type: custom:apexcharts-card
+                        chart_type: radialBar
+                        series:
+                          - entity: sensor.growatts_battery_soc
+                            color: green
+                            max: 100
+                            show:
+                              legend_value: false
+                        apex_config:
+                          plotOptions:
+                            radialBar:
+                              offsetY: 0
+                              startAngle: -90
+                              endAngle: 90
+                              margin: 100
+                              hollow:
+                                size: 70%
+                              dataLabels:
+                                name:
+                                  show: false
+                                value:
+                                  show: false
+                              track:
+                                strokeWidth: 90%
+                                margin: 0
+                          fill:
+                            type: gradient
+                            gradient:
+                              shade: light
+                              type: horizontal
+                              shadeIntensity: 0.4
+                              inverseColors: false
+                              opacityFrom: 1
+                              opacityTo: 1
+                              stops:
+                                - 0
+                                - 50
+                                - 53
+                                - 91
+                          legend:
+                            show: false
+                          chart:
+                            height: 240
+                      - type: custom:mushroom-template-card
+                        secondary: >-
+                          {% set sensor =
+                          states('sensor.hus_batteri_opladning')|float %}
+
+                          {% set sensor1 =
+                          states('sensor.hus_batteri_afladning') %}
+
+                          {% if (sensor == 0.0) %}
+
+                          Aflader {{ sensor1 }} W
+
+                          {% elif (sensor != 0.0) %}
+
+                          lader  {{ sensor }}Kwh
+
+                          {% endif %}
+                        primary: |
+                          {{ states('sensor.growatts_battery_soc')|float }}%
+                        layout: vertical
+                        card_mod:
+                          style: |
+                            ha-card {
+                              margin-top: -80px;
+                              width: 140px;
+                              margin-left: auto;
+                              margin-right: auto;
+                              border: 0px
+                            }
+      - type: horizontal-stack
+        title: Batteri skur
+        cards:
+          - square: false
+            columns: 1
+            type: grid
+            cards:
+              - square: false
+                columns: 1
+                type: grid
+                cards:
+                  - type: custom:stack-in-card
+                    cards:
+                      - type: custom:apexcharts-card
+                        chart_type: radialBar
+                        series:
+                          - entity: sensor.skur_battery_soc
+                            color: green
+                            max: 100
+                            show:
+                              legend_value: false
+                        apex_config:
+                          plotOptions:
+                            radialBar:
+                              offsetY: 0
+                              startAngle: -90
+                              endAngle: 90
+                              margin: 100
+                              hollow:
+                                size: 70%
+                              dataLabels:
+                                name:
+                                  show: false
+                                value:
+                                  show: false
+                              track:
+                                strokeWidth: 90%
+                                margin: 0
+                          fill:
+                            type: gradient
+                            gradient:
+                              shade: light
+                              type: horizontal
+                              shadeIntensity: 0.4
+                              inverseColors: false
+                              opacityFrom: 1
+                              opacityTo: 1
+                              stops:
+                                - 0
+                                - 50
+                                - 53
+                                - 91
+                          legend:
+                            show: false
+                          chart:
+                            height: 240
+                      - type: custom:mushroom-template-card
+                        secondary: >-
+                          {% set sensor =
+                          states('sensor.lokal_batteri_opladning')|float %}
+
+                          {% set sensor1 =
+                          states('sensor.lokal_batteri_afladning') %}
+
+                          {% if (sensor == 0.0) %}
+
+                          Aflader  {{ sensor1 }} W
+
+                          {% elif (sensor != 0.0) %}
+
+                          lader  {{ sensor }}Kwh
+
+                          {% endif %}
+                        primary: |
+                          {{ states('sensor.skur_battery_soc')|float }}%
+                        layout: vertical
+                        card_mod:
+                          style: |
+                            ha-card {
+                              margin-top: -80px;
+                              width: 140px;
+                              margin-left: auto;
+                              margin-right: auto;
+                              border: 0px
+                            }
+      - type: entities
+        entities:
+          - entity: select.growatts_charger_start_time_1
+            name: Opladning Start Ladning kl.
+          - entity: select.growatts_charger_end_time_1
+            name: Opladning Afslut Ladning kl.
+          - entity: select.growatts_charger_time_1
+            name: Aktiver Lade-Tid
+          - entity: select.growatts_charger_switch
+            name: Tænd/Sluk Batteri-Ladning
+        title: Batteri Hus
+      - type: entities
+        entities:
+          - entity: sensor.growatts_battery_minimum_capacity
+            name: Battery Minimum Capacity
+          - entity: sensor.growatts_charger_start_time_1
+            name: Charger Start Time 1
+          - entity: sensor.growatts_charger_end_time_1
+            name: Charger End Time 1
+          - entity: sensor.growatts_charger_switch
+            name: Charger Switch
+          - entity: sensor.growatts_charger_time_1
+            name: Charger Time 1
+          - entity: sensor.growatts_grid_end_time_1
+            name: Grid End Time 1
+          - entity: sensor.growatts_grid_current
+            name: Grid Current
+          - entity: sensor.growatts_grid_power
+            name: Grid Power
+          - entity: sensor.growatts_grid_start_time_1
+            name: Grid Start Time 1
+          - entity: sensor.growatts_grid_time_1
+            name: Grid Time 1
+          - entity: sensor.growatts_load_start_time_1
+            name: Load Start Time 1
+          - entity: sensor.growatts_load_time_1
+            name: Load Time 1
+          - entity: sensor.growatts_load_end_time_1
+            name: Load End Time 1
+          - entity: sensor.growatts_priority
+            name: Priority
+          - entity: sensor.growatts_pv_current_1
+            name: PV Current 1
+          - entity: sensor.growatts_pv_current_2
+            name: PV Current 2
+          - entity: sensor.growatts_pv_power_1
+            name: PV Power 1
+          - entity: sensor.growatts_pv_power_2
+            name: PV Power 2
+          - entity: sensor.growatts_pv_power_total
+            name: PV Power Total
+          - entity: sensor.growatts_pv_voltage_1
+            name: PV Voltage 1
+          - entity: sensor.growatts_pv_voltage_2
+            name: PV Voltage 2
+          - entity: sensor.growatts_today_s_battery_input_energy
+            name: Today's Battery Input Energy
+          - entity: sensor.growatts_today_s_battery_output_energy
+            name: Today's Battery Output Energy
+          - entity: sensor.growatts_today_s_grid_export
+            name: Today's Grid Export
+          - entity: sensor.growatts_today_s_grid_import
+            name: Today's Grid Import
+          - entity: sensor.growatts_today_s_pv1_solar_energy
+            name: Today's PV1 Solar Energy
+          - entity: sensor.growatts_today_s_solar_energy
+            name: Today's Solar Energy
+          - entity: sensor.growatts_today_s_pv2_solar_energy
+            name: Today's PV2 Solar Energy
+          - entity: sensor.growatts_today_spower_generation
+            name: Today'sPower Generation
+          - entity: sensor.growatts_total_battery_input_energy
+            name: Total Battery Input Energy
+          - entity: sensor.growatts_total_battery_output_energy
+            name: Total Battery Output Energy
+          - entity: sensor.growatts_total_grid_export
+            name: Total Grid Export
+          - entity: sensor.growatts_total_grid_import
+            name: Total Grid Import
+          - entity: sensor.growatts_total_house_load
+            name: Total House Load
+          - entity: sensor.growatts_total_load
+            name: Total Load
+          - entity: sensor.growatts_total_power_generation
+            name: Total Power Generation
+          - entity: sensor.growatts_total_pv1_solar_energy
+            name: Total PV1 Solar Energy
+          - entity: sensor.growatts_total_pv2_solar_energy
+            name: Total PV2 Solar Energy
+        title: growatt hus
+      - type: entities
+        entities:
+          - entity: select.skur_charger_end_time_1
+            name: Charger End Time 1
+          - entity: select.skur_charger_end_time_2
+            name: Charger End Time 2
+          - entity: select.skur_charger_end_time_3
+            name: Charger End Time 3
+          - entity: select.skur_charger_start_time_1
+            name: Charger Start Time 1
+          - entity: select.skur_charger_start_time_2
+            name: Charger Start Time 2
+          - entity: select.skur_charger_start_time_3
+            name: Charger Start Time 3
+          - entity: select.skur_charger_switch
+            name: Charger Switch
+          - entity: select.skur_charger_time_1
+            name: Charger Time 1
+          - entity: select.skur_charger_time_2
+            name: Charger Time 2
+          - entity: select.skur_charger_time_3
+            name: Charger Time 3
+          - entity: select.skur_grid_end_time_1
+            name: Grid End Time 1
+          - entity: select.skur_grid_end_time_2
+            name: Grid End Time 2
+          - entity: select.skur_grid_end_time_3
+            name: Grid End Time 3
+          - entity: number.skur_grid_export_limit
+            name: Grid Export Limit
+          - entity: select.skur_grid_start_time_1
+            name: Grid Start Time 1
+          - entity: select.skur_grid_start_time_2
+            name: Grid Start Time 2
+          - entity: select.skur_grid_start_time_3
+            name: Grid Start Time 3
+          - entity: select.skur_grid_time_1
+            name: Grid Time 1
+          - entity: select.skur_grid_time_2
+            name: Grid Time 2
+          - entity: select.skur_grid_time_3
+            name: Grid Time 3
+          - entity: select.skur_limit_grid_export
+            name: Limit Grid Export
+          - entity: select.skur_load_end_time_1
+            name: Load End Time 1
+          - entity: select.skur_load_end_time_2
+            name: Load End Time 2
+          - entity: select.skur_load_end_time_3
+            name: Load End Time 3
+          - entity: select.skur_load_start_time_1
+            name: Load Start Time 1
+          - entity: select.skur_load_start_time_2
+            name: Load Start Time 2
+          - entity: select.skur_load_start_time_3
+            name: Load Start Time 3
+          - entity: select.skur_load_time_1
+            name: Load Time 1
+          - entity: select.skur_load_time_2
+            name: Load Time 2
+          - entity: select.skur_load_time_3
+            name: Load Time 3
+        title: Batteri skur
+      - type: entities
+        entities:
+          - entity: sensor.skur_ac_power_to_grid_l1
+            name: AC Power to Grid L1
+          - entity: sensor.skur_ac_power_to_grid_l2
+            name: AC Power to Grid L2
+          - entity: sensor.skur_ac_power_to_grid_l3
+            name: AC Power to Grid L3
+          - entity: sensor.skur_ac_power_to_grid_total
+            name: AC Power to Grid Total
+          - entity: sensor.skur_battery_charge_power
+            name: Battery Charge Power
+          - entity: sensor.skur_battery_combined_power
+            name: Battery Combined Power
+          - entity: sensor.skur_battery_discharge_power
+            name: Battery Discharge Power
+          - entity: sensor.skur_battery_soc
+            name: Battery SOC
+          - entity: sensor.skur_battery_voltage
+            name: Battery Voltage
+          - entity: sensor.skur_grid_current_l1
+            name: Grid Current L1
+          - entity: sensor.skur_grid_current_l2
+            name: Grid Current L2
+          - entity: sensor.skur_grid_current_l3
+            name: Grid Current L3
+          - entity: sensor.skur_grid_frequency
+            name: Grid Frequency
+          - entity: sensor.skur_grid_power_l1
+            name: Grid Power L1
+          - entity: sensor.skur_grid_power_l2
+            name: Grid Power L2
+          - entity: sensor.skur_grid_power_l3
+            name: Grid Power L3
+          - entity: sensor.skur_grid_voltage_l1
+            name: Grid Voltage L1
+          - entity: sensor.skur_grid_voltage_l2
+            name: Grid Voltage L2
+          - entity: sensor.skur_grid_voltage_l3
+            name: Grid Voltage L3
+          - entity: sensor.skur_house_load_l1
+            name: House Load L1
+          - entity: sensor.skur_house_load_l2
+            name: House Load L2
+          - entity: sensor.skur_house_load_l3
+            name: House Load L3
+          - entity: sensor.skur_output_power
+            name: Output Power
+          - entity: sensor.skur_priority
+            name: Priority
+          - entity: sensor.skur_pv_current_1
+            name: PV Current 1
+          - entity: sensor.skur_pv_current_2
+            name: PV Current 2
+          - entity: sensor.skur_pv_power_1
+            name: PV Power 1
+          - entity: sensor.skur_pv_power_2
+            name: PV Power 2
+          - entity: sensor.skur_pv_power_total
+            name: PV Power Total
+          - entity: sensor.skur_pv_voltage_1
+            name: PV Voltage 1
+          - entity: sensor.skur_pv_voltage_2
+            name: PV Voltage 2
+          - entity: sensor.skur_run_mode
+            name: Run Mode
+          - entity: sensor.skur_self_power
+            name: Self Power
+          - entity: sensor.skur_system_power
+            name: System Power
+          - entity: sensor.skur_today_s_battery_input_energy
+            name: Today's Battery Input Energy
+          - entity: sensor.skur_today_s_battery_output_energy
+            name: Today's Battery Output Energy
+          - entity: sensor.skur_today_s_grid_export
+            name: Today's Grid Export
+          - entity: sensor.skur_today_s_grid_import
+            name: Today's Grid Import
+          - entity: sensor.skur_today_s_load
+            name: Today's Load
+          - entity: sensor.skur_today_s_power_generation
+            name: Today's Power Generation
+          - entity: sensor.skur_today_s_solar_energy
+            name: Today's Solar Energy
+          - entity: sensor.skur_total_house_load
+            name: Total House Load
+          - entity: sensor.skur_total_power_generation
+            name: Total Power Generation
+          - entity: sensor.skur_total_solar_energy
+            name: Total Solar Energy
+        title: Skur
+  - title: kamera
+    path: tablet-kamera
+    cards:
+      - type: grid
+        square: false
+        columns: 1
+        cards:
+          - type: custom:webrtc-camera
+            url: have
+          - type: custom:webrtc-camera
+            url: skur-solceller
+      - type: grid
+        square: false
+        columns: 1
+        cards:
+          - type: custom:webrtc-camera
+            url: pool-rum
+          - type: custom:webrtc-camera
+            url: vaske-rum
+  - theme: Backend-selected
+    title: solceller
+    path: tablet-solceller
+    icon: mdi:solar-panel
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: ' '
+            title: Import/Export
+          - decimals: 1
+            icon: mdi:power-plug-outline
+            entities:
+              - color: Red
+                entity: sensor.growatts_today_s_grid_import
+                name: Import
+                show_points: true
+                show_state: true
+                show_indicator: true
+                y_axis: secondary
+              - color: Green
+                entity: sensor.growatts_today_s_grid_export
+                name: Export
+                show_points: true
+                show_state: true
+                show_indicator: true
+                y_axis: secondary
+            hour24: true
+            hours_to_show: 12
+            line_width: 3
+            lower_bound_secondary: 0
+            name: Import/Export
+            points_per_hour: 100
+            show:
+              extrema: false
+              labels: false
+              labels_secondary: false
+              smoothing: false
+            type: custom:mini-graph-card
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: ' '
+            title: Produktion
+          - decimals: 1
+            icon: mdi:solar-panel-large
+            entities:
+              - color: red
+                entity: sensor.solceller_total_aktuel
+                name: Hus Growatt
+                show_points: false
+                show_state: false
+                show_graph: false
+                show_indicator: false
+              - color: red
+                entity: sensor.growatts_pv_power_total_kw
+                name: Hus Growatt
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: blue
+                entity: sensor.skur_pv_power_total_kw
+                name: Skur Growatt
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: green
+                entity: sensor.delta_produktion_aktuel
+                name: Hus Delta
+                show_points: true
+                show_state: true
+                show_indicator: true
+                y_axis: secondary
+            hour24: true
+            hours_to_show: 16
+            line_width: 3
+            lower_bound_secondary: 0
+            name: Solceller Produktion Aktuel
+            points_per_hour: 1
+            show:
+              extrema: false
+              labels: false
+              labels_secondary: false
+              smoothing: false
+            type: custom:mini-graph-card
+          - decimals: 1
+            icon: mdi:solar-panel-large
+            entities:
+              - color: '#00ff00'
+                entity: sensor.solceller_total
+                name: Total
+                show_points: false
+                show_state: false
+                show_graph: false
+                show_indicator: true
+              - color: red
+                entity: sensor.growatts_today_s_solar_energy
+                name: Hus Growatt
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: blue
+                entity: sensor.skur_today_s_solar_energy
+                name: Skur Growatt
+                show_points: true
+                show_state: true
+                show_indicator: true
+              - color: green
+                entity: sensor.delta_daglig
+                name: Hus Delta
+                show_points: true
+                show_state: true
+                show_indicator: true
+                y_axis: secondary
+            hour24: true
+            hours_to_show: 12
+            line_width: 3
+            lower_bound_secondary: 0
+            name: Solceller Produktion 24 Timer
+            points_per_hour: 1
+            show:
+              extrema: true
+              labels: false
+              labels_secondary: false
+              smoothing: false
+            type: custom:mini-graph-card
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |-
+
+              {% if states.sensor.growatts_battery_charge_power %}
+                {% set sensor = states('sensor.growatts_battery_charge_power')|float(0.0) %}
+                {% set sensor1 = states('sensor.growatts_battery_discharge_power')|default('Unknown') %}
+                {% if sensor == 0.0 %}
+                  Hus Aflader {{ sensor1 }} Kw
+                {% elif sensor != 0.0 %}
+                  Hus lader {{ sensor }} Kw
+                {% endif %}
+                  {% endif %}
+            title: Batteri
+          - type: vertical-stack
+            cards:
+              - decimals: 1
+                icon: mdi:battery
+                entities:
+                  - color: blue
+                    entity: sensor.skur_battery_soc
+                    name: Skur
+                    show_points: true
+                    show_state: true
+                    show_indicator: true
+                  - color: red
+                    entity: sensor.growatts_battery_soc
+                    name: Hus
+                    show_points: true
+                    show_state: true
+                    show_indicator: true
+                    y_axis: secondary
+                hour24: true
+                hours_to_show: 12
+                line_width: 3
+                lower_bound_secondary: 0
+                name: Batterier
+                points_per_hour: 1
+                show:
+                  extrema: false
+                  labels: false
+                  labels_secondary: false
+                  smoothing: false
+                type: custom:mini-graph-card
+          - type: entities
+            entities:
+              - entity: input_datetime.growatt_start_time
+              - entity: input_datetime.growatt_end_time
+              - entity: input_boolean.start_growatt_charge
+            title: Opladning Hus
+          - type: custom:mushroom-template-card
+            primary: Oplad batteri når billigst (3 timer)
+            secondary: |2
+                Kl. {{ states('input_text.lowest_three_hour_start_hour') }} Prisen vil være  {{ states('input_number.lowest_three_hour_sum') }} Kr
+            icon: mdi:battery-positive
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              target:
+                entity_id: automation.Growatt_Battery_Charge_Automatic
+              data:
+                skip_condition: true
+            icon_color: green
+  - theme: Backend-selected
+    title: Støvsuger
+    path: tablet-Støvsuger
+    icon: mdi:vacuum
+    badges: []
+    cards:
+      - type: custom:xiaomi-vacuum-map-card
+        entity: vacuum.fru_robert
+        vacuum_platform: default
+        map_source:
+          camera: camera.xiaomi_cloud_map_extractor
+        calibration_source:
+          camera: true
+        two_finger_pan: false
+  - title: Eloverblik
+    path: eloverblik
+    icon: ⚡
+    badges: []
+    cards: []
+  - title: test
+    path: test
+    type: custom:grid-layout
+    cards: []
+title: Tablet

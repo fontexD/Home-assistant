@@ -1,0 +1,252 @@
+- id: '1663882231369'
+  alias: ikea_knap_4
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: c942e5af018eea990f2121fafb04ab3f
+    type: action
+    subtype: toggle
+    discovery_id: 0x000b57fffee2b948 action_toggle
+  condition: []
+  action:
+  - type: toggle
+    device_id: e7170301460f4508ecf964e39ebea468
+    entity_id: light.sovevaerelse
+    domain: light
+  mode: single
+- id: '1675787009886'
+  alias: køkken_lys
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.kokken_sensor_motion
+      light_target:
+        area_id: kokken
+      no_motion_wait: 613
+- id: '1684065359260'
+  alias: Vask
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.unnamed_room
+    data:
+      media_content_id: media-source://tts/cloud?message=Tak+siger+kattemis+miav+miav&language=da-DK
+      media_content_type: provider
+    metadata:
+      title: Tak siger kattemis miav miav
+      thumbnail: https://brands.home-assistant.io/_/cloud/logo.png
+      media_class: app
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://tts
+      - media_content_type: provider
+        media_content_id: media-source://tts/cloud?message=Tak+siger+kattemis+miav+miav&language=da-DK
+  mode: single
+- id: '1684566929169'
+  alias: Growatt_Battery_Charge_manual
+  description: ''
+  triggers:
+  - entity_id: input_boolean.start_growatt_charge
+    to: 'on'
+    trigger: state
+  actions:
+  - data_template:
+      entity_id: select.growatts_battery_first_time_1_begin
+      option: '{{ states(''input_datetime.growatt_start_time'') | regex_replace('':[0-9]{2}$'',
+        '''') }}'
+    enabled: true
+    action: select.select_option
+  - data_template:
+      entity_id: select.growatts_battery_first_time_1_end
+      option: '{{ states(''input_datetime.growatt_end_time'') | regex_replace('':[0-9]{2}$'',
+        '''') }}'
+    action: select.select_option
+  - device_id: f1e6df40352ef48a7e4e8d41e89d9767
+    domain: select
+    entity_id: faa4d15872cf34ffd982953abe2142fe
+    type: select_last
+  - device_id: f1e6df40352ef48a7e4e8d41e89d9767
+    domain: select
+    entity_id: 1107bcf334c808756c76501cb2d45775
+    type: select_last
+  - device_id: f1e6df40352ef48a7e4e8d41e89d9767
+    domain: select
+    entity_id: 44bde0caba0872245eac1aa2ab3dce79
+    type: select_next
+    cycle: false
+    enabled: false
+  - entity_id: input_boolean.start_growatt_charge
+    action: input_boolean.turn_off
+  mode: single
+- id: '1696418838150'
+  alias: battery_charge_time
+  description: ''
+  trigger:
+  - platform: time_pattern
+    hours: '15'
+    minutes: '00'
+    seconds: '00'
+  condition: []
+  action:
+  - service: script.lowest_three_hour_sum
+    data: {}
+    response_variable: 3hours
+  mode: single
+- id: '1697294184651'
+  alias: Growatt_Battery_Charge_Automatic
+  description: Set Charging Times Automatically
+  triggers: []
+  actions:
+  - data_template:
+      entity_id: select.growatts_battery_first_time_1_begin
+      option: '{{ states(''input_text.lowest_three_hour_start_hour'') }}'
+    action: select.select_option
+  - data_template:
+      entity_id: select.growatts_battery_first_time_1_end
+      option: '{{ (as_timestamp(strptime(states(''input_text.lowest_three_hour_start_hour''),
+        ''%H:%M'')) + 3*3600) | timestamp_custom(''%H:%M'', true) }}'
+    action: select.select_option
+  - device_id: f1e6df40352ef48a7e4e8d41e89d9767
+    domain: select
+    entity_id: faa4d15872cf34ffd982953abe2142fe
+    type: select_last
+  - device_id: f1e6df40352ef48a7e4e8d41e89d9767
+    domain: select
+    entity_id: 1107bcf334c808756c76501cb2d45775
+    type: select_last
+  - data_template:
+      entity_id: input_datetime.growatt_start_time
+      time: '{{ states(''input_text.lowest_three_hour_start_hour'') }}'
+    action: input_datetime.set_datetime
+  - data_template:
+      entity_id: input_datetime.growatt_end_time
+      time: '{{ (as_timestamp(strptime(states(''input_text.lowest_three_hour_start_hour''),
+        ''%H:%M'')) + 3*3600) | timestamp_custom(''%H:%M'', true) }}'
+    action: input_datetime.set_datetime
+- id: '1711982531829'
+  alias: ntfy_test
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: shell_command.curl
+    data:
+      url: https://ntfy.fontex.dk/ha
+      data: Batteri er opladet til {{ states('sensor.growatts_battery_soc') }}%
+  mode: single
+- id: '1711988437699'
+  alias: Send Notification at 8 AM
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.vaskemaskine_pre_state
+    to: Færdig
+  action:
+  - service: notify.ntfy
+    data:
+      title: VaskeMaskine
+      message: Vaskemaskinen er færdig
+- id: '1715583318195'
+  alias: export_growatt
+  description: Set Charging Times Automatically
+  trigger: []
+  condition: []
+  action:
+  - service: select.select_option
+    data_template:
+      entity_id: select.growatts_grid_first_time_1_start_time_1
+      option: 06:00
+  - service: select.select_option
+    data_template:
+      entity_id: select.growatts_grid_first_time_1_begin
+      option: 06:00
+  - service: select.select_option
+    data_template:
+      entity_id: select.growatts_grid_first_time_1_end
+      option: '13:00'
+  - service: select.select_option
+    data_template:
+      entity_id: select.growatts_grid_first_time_1_end
+      option: '13:00'
+  - device_id: 6cb100bca3d717d1645218429687d93a
+    domain: select
+    entity_id: 6092c62d9b4ef3b8c2201013d760eadc
+    type: select_option
+    option: Disabled
+  - device_id: 6cb100bca3d717d1645218429687d93a
+    domain: select
+    entity_id: select.growatts_grid_first_time_1
+    type: select_first
+  mode: single
+- id: '1716045149985'
+  alias: Solar_hourly
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: 0
+  action:
+  - service: homeassistant.update_entity
+    target:
+      entity_id: sensor.hourly_solar_production
+    data: {}
+- id: '1716744128529'
+  alias: tts_skrald
+  description: Announce garbage removal details the day before pickup
+  trigger:
+  - platform: time
+    at: '18:00:00'
+  condition:
+  - condition: template
+    value_template: '{% set pickup_date = states(''sensor.glas_metal_hard_plast_collection_2'')
+      %} {% set pickup_date_obj = strptime(pickup_date, ''%Y-%m-%d'') %} {{ (pickup_date_obj
+      - now().date()).days == 1 }}
+
+      '
+  action:
+  - service: tts.google_translate_say
+    data:
+      cache: false
+      entity_id: media_player.unnamed_room
+      language: da
+      message: Imorgen hentes glas metal hård plast
+  mode: single
+- id: '1719938421840'
+  alias: skralde_afhentning
+  description: ''
+  trigger:
+  - platform: time
+    at: '16:30:00'
+  condition:
+  - condition: template
+    value_template: "{{ is_state('sensor.is_restaffald_collection_today', 'True')
+      or\n    is_state('sensor.is_pap_papir_collection_today', 'True') or\n    is_state('sensor.is_glas_metal_hard_plast_collection_today',
+      'True') }}\n"
+  action:
+  - service: light.turn_on
+    data:
+      color_name: blue
+    target:
+      entity_id: light.kokken
+  mode: single
+- id: '1722705140991'
+  alias: Ladebar
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - alias: Giv mad til missen
+    service: mqtt.publish
+    metadata: {}
+    data:
+      topic: zigbee2mqtt/Ladebar/set
+      payload: '{"feed":""}'
+      qos: '0'
+  mode: single

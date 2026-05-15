@@ -1,0 +1,7 @@
+streams:
+  garage:
+  - rtsp://admin:Datait2022!!@10.0.0.10:554/streaming/channels/101
+  have1:
+  - rtsp://admin:Datait2022!!@10.0.0.63:554/streaming/channels/101
+  have2:
+  - rtsp://admin:Datait2022!!@10.0.0.64:554/streaming/channels/101

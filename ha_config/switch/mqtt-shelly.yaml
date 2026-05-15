@@ -1,0 +1,10 @@
+- platform: mqtt
+  name: "Shelly1PM-example"
+  unique_id: "shelly_1pm_example"
+  payload_on: "on"
+  payload_off: "off"
+  qos: 1
+  state_topic: "shellies/shelly1pm-98CDAC1F7653/relay/0"
+  command_topic: "shellies/shelly1pm-98CDAC1F7653/relay/0/command"
+  json_attributes_topic: "shellies/shelly1pm-98CDAC1F7653/info"
+  

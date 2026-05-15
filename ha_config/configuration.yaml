@@ -1,0 +1,89 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.10.200
+    - 192.168.10.201
+    - 85.191.28.127
+    - 172.0.0.0/8
+    - 172.30.33.0/24
+
+frontend:
+  themes: !include_dir_merge_named themes
+  extra_module_url:
+    - /hacsfiles/lovelace-card-mod/card-mod.js
+
+tts:
+  - platform: google_translate
+    language: "da"
+
+var:
+  kattemis_udeinde:
+    friendly_name: "kattemis ude inde"
+    initial_value: 0
+    icon: mdi:cat
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor: !include sensors.yaml
+mqtt: !include mqtt.yaml
+
+shell_command:
+  curl: "curl -X POST -d '{{ data }}' {{ url }}"
+
+template:
+  - sensor:
+      - name: "Today Min Price"
+        state: "{{ state_attr('sensor.energi_data_service', 'today_min')['price'] }}"
+      - name: "Today Max Price"
+        state: "{{ state_attr('sensor.energi_data_service', 'today_max')['price'] }}"
+      - name: "Today Mean Price"
+        state: "{{ states('sensor.energi_data_service.attributes.today_mean') }}"
+      - name: "Tomorrow Min Price"
+        state: "{{ state_attr('sensor.energi_data_service', 'tomorrow_min')['price'] }}"
+      - name: "Tomorrow Max Price"
+        state: "{{ state_attr('sensor.energi_data_service', 'tomorrow_max')['price'] }}"
+      - name: "Lowest Three Hour Sum"
+        state: "{{ states('input_number.lowest_three_hour_sum') }}"
+        attributes:
+          start_hour: "{{ states('input_text.lowest_three_hour_start_hour') }}"
+  - !include template_sensors.yaml
+
+python_script:
+
+notify:
+  - name: ntfy
+    platform: rest
+    method: POST_JSON
+    authentication: basic
+    username: ronny
+    password: Datait2022!!
+    data:
+      topic: ha
+    title_param_name: title
+    message_param_name: message
+    resource: https://ntfy.fontex.dk
+
+influxdb:
+  api_version: 2
+  host: influxdb.fontex.dk
+  port: 443
+  bucket: ronny_ha
+  organization: proxmox
+  token: zjuEsfAaSvg2LbhwLu9cqlGG9UWvBdw3fgtRvF3yI-7FqrE3Lm96vt_UnL-k3r6navSLB6JpOsuW02vpYJmwsg==
+  max_retries: 3
+  default_measurement: state
+  include:
+    entities:
+      - sensor.power_usage_daily
+      - sensor.growatts_pv_power_total
+      - sensor.growatts_today_s_solar_energy_2
+      - sensor.nordpool_kwh_dk1_dkk_3_10_025
+logger:
+  default: warning
+  logs:
+    homeassistant.components.influxdb: debug
