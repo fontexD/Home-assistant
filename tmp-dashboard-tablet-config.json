@@ -1,0 +1,1082 @@
+{
+  "kiosk_mode": {
+    "user_settings": [
+      {
+        "users": [
+          "Paul"
+        ],
+        "ignore_entity_settings": true
+      }
+    ],
+    "entity_settings": [
+      {
+        "entity": {
+          "input_boolean.kiosk_hide_header_and_sidebar": "on"
+        },
+        "hide_sidebar": true,
+        "hide_header": true
+      },
+      {
+        "entity": {
+          "input_boolean.kiosk_hide_header_and_sidebar": "off"
+        },
+        "hide_sidebar": false,
+        "hide_header": false
+      }
+    ]
+  },
+  "views": [
+    {
+      "title": "Home",
+      "path": "office",
+      "background": "center / cover no-repeat fixed url('/local/images/backgrounds/leaf-darker-background.png')",
+      "type": "custom:vertical-layout",
+      "cards": [
+        {
+          "type": "custom:digital-clock",
+          "dateFormat": "cccc dd LLLL yyyy",
+          "timeFormat": "HH:mm",
+          "card_mod": {
+            "style": "ha-card {\n  background-color: transparent;\n  border-color: transparent;\n  box-shadow: none;\n}\nspan.first-line \n{\nfont-size: 2em;\nmargin-top:-3px;\nmargin-bottom:10px;\n}\nspan.second-line \n{\nfont-size: 1.5em;\nmargin-bottom:5px;\n}\n"
+          }
+        },
+        {
+          "show_current": true,
+          "show_forecast": false,
+          "type": "weather-forecast",
+          "entity": "weather.hjem",
+          "forecast_type": "daily"
+        },
+        {
+          "square": false,
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:mushroom-template-card",
+              "primary": "Day",
+              "secondary": "Scene",
+              "icon": "hue:bulb-filament",
+              "entity": "scene.office_office_day",
+              "icon_color": "{{ 'light-green' if states('switch.office_day_stateful_scene') == 'on' else 'dark-grey' }}",
+              "card_mod": {
+                "style": {
+                  "mushroom-state-info$": ".container {\n --card-primary-font-size: 18px;\n --card-secondary-font-size: 13px;\n}\n"
+                }
+              }
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "primary": "Bright",
+              "secondary": "Scene",
+              "icon": "hue:bulb-filament",
+              "entity": "scene.office_bright",
+              "icon_color": "{{ 'light-green' if states('switch.bright_stateful_scene') == 'on' else 'dark-grey' }}",
+              "card_mod": {
+                "style": {
+                  "mushroom-state-info$": ".container {\n --card-primary-font-size: 18px;\n --card-secondary-font-size: 13px;\n}\n"
+                }
+              }
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "primary": "Night",
+              "secondary": "Scene",
+              "icon": "hue:bulb-filament",
+              "entity": "scene.office_office_night",
+              "icon_color": "{{ 'light-green' if states('switch.office_night_stateful_scene') == 'on' else 'dark-grey' }}",
+              "card_mod": {
+                "style": {
+                  "mushroom-state-info$": ".container {\n --card-primary-font-size: 18px;\n --card-secondary-font-size: 13px;\n}\n"
+                }
+              }
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "empty-column"
+            }
+          ],
+          "columns": 2
+        },
+        {
+          "square": false,
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:mushroom-template-card",
+              "primary": "{% if is_state('sensor.vaskemaskine', 'on') %}\n  Remaining {% set ct = states('sensor.washing_machine_washer_completion_time') | as_datetime %}{{ '00:00' if now() > ct else (ct - now()).total_seconds() | timestamp_custom('%H:%M', false) }}        \n{% elif is_state('sensor.washing_machine_washer_machine_state', 'pause') %}\n  Washing machine paused\n{% elif is_state('sensor.washing_machine_washer_machine_state', 'stop') %}\n  Washer off\n{% endif %}",
+              "secondary": "{% if is_state('sensor.washing_machine_washer_machine_state', 'run') %}\n  Status: {{ states('sensor.washing_machine_washer_job_state') }}\n{% endif %}",
+              "icon": "mdi:washing-machine",
+              "entity": "sensor.washing_machine_washer_machine_state",
+              "tap_action": {
+                "action": "none"
+              },
+              "hold_action": {
+                "action": "more-info"
+              },
+              "double_tap_action": {
+                "action": "none"
+              },
+              "icon_color": "{% if is_state('sensor.vaskemaskine', 'on') %}\n  green         \n{% elif is_state('sensor.vaskemaskine', 'off') %}\n  dark-grey\n{% elif is_state('sensor.vaskemaskine', 'pause') %}\n  lightskyblue\n{% endif %}",
+              "fill_container": false,
+              "badge_icon": "",
+              "picture": "",
+              "layout": "horizontal",
+              "card_mod": {
+                "style": {
+                  "mushroom-shape-icon$": ".shape {\n  --icon-symbol-size: 35px;\n  --icon-size: 55px;\n }\n",
+                  "mushroom-state-info$": ".container {\n --card-primary-font-size: 18px;\n --card-secondary-font-size: 13px;\n}\n"
+                }
+              }
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "primary": "{% if is_state('sensor.tumble_dryer_dryer_machine_state', 'run') %}\n  Remaining {% set ct = states('sensor.tumble_dryer_dryer_completion_time') | as_datetime %}{{ '00:00' if now() > ct else (ct - now()).total_seconds() | timestamp_custom('%H:%M', false) }}        \n{% elif is_state('sensor.tumble_dryer_dryer_machine_state', 'pause') %}\n  Tumble dryer paused\n{% elif is_state('sensor.tumble_dryer_dryer_machine_state', 'stop') %}\n  Dryer off\n{% endif %}",
+              "secondary": "{% if is_state('sensor.tumble_dryer_dryer_machine_state', 'run') %}\n  Status: {{ states('sensor.tumble_dryer_dryer_job_state') }}\n{% endif %}",
+              "icon": "mdi:tumble-dryer",
+              "entity": "sensor.tumble_dryer_dryer_machine_state",
+              "tap_action": {
+                "action": "none"
+              },
+              "hold_action": {
+                "action": "more-info"
+              },
+              "double_tap_action": {
+                "action": "none"
+              },
+              "icon_color": "{% if is_state('sensor.tumble_dryer_dryer_machine_state', 'run') %}\n  green         \n{% elif is_state('sensor.tumble_dryer_dryer_machine_state', 'stop') %}\n  dark-grey\n{% elif is_state('sensor.tumble_dryer_dryer_machine_state', 'pause') %}\n  lightskyblue\n{% endif %}",
+              "fill_container": false,
+              "badge_icon": "",
+              "picture": "",
+              "layout": "horizontal",
+              "card_mod": {
+                "style": {
+                  "mushroom-shape-icon$": ".shape {\n  --icon-symbol-size: 35px;\n  --icon-size: 55px;\n}\n",
+                  "mushroom-state-info$": ".container {\n --card-primary-font-size: 18px;\n --card-secondary-font-size: 13px;\n}\n"
+                }
+              }
+            }
+          ],
+          "columns": 2
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "custom:mushroom-template-card",
+              "primary": "Restaffald",
+              "secondary": "{{ states('sensor.restaffald_collection_2') if states('sensor.restaffald_collection_2') not in ['unknown','unavailable','none','None',''] else states('sensor.restaffald_collection') }}",
+              "icon": "mdi:trash-can",
+              "hold_action": {
+                "action": "none"
+              },
+              "double_tap_action": {
+                "action": "none"
+              },
+              "icon_color": "{{ 'red' if is_state('sensor.is_restaffald_collection_tomorrow','True') or is_state('sensor.is_restaffald_collection_tomorrow','on') else 'green' }}",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "entity": "sensor.restaffald_collection_2"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "primary": "Glas, Metal, Mad-drikkekartoner, Plast",
+              "secondary": "{{ states('sensor.glas_metal_hard_plast_collection_2') if states('sensor.glas_metal_hard_plast_collection_2') not in ['unknown','unavailable','none','None',''] else states('sensor.glas_metal_hard_plast_collection') }}",
+              "icon": "mdi:trash-can",
+              "hold_action": {
+                "action": "none"
+              },
+              "double_tap_action": {
+                "action": "none"
+              },
+              "icon_color": "{{ 'red' if is_state('sensor.is_glas_metal_hard_plast_collection_tomorrow','True') or is_state('sensor.is_glas_metal_hard_plast_collection_tomorrow','on') else 'green' }}",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "entity": "sensor.glas_metal_hard_plast_collection_2"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "primary": "Pap, Papir, Tekstil",
+              "secondary": "{{ states('sensor.pap_papir_collection_2') if states('sensor.pap_papir_collection_2') not in ['unknown','unavailable','none','None',''] else states('sensor.pap_papir_collection') }}",
+              "icon": "mdi:trash-can",
+              "hold_action": {
+                "action": "none"
+              },
+              "double_tap_action": {
+                "action": "none"
+              },
+              "icon_color": "{{ 'red' if is_state('sensor.is_pap_papir_collection_tomorrow','True') or is_state('sensor.is_pap_papir_collection_tomorrow','on') else 'green' }}",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "entity": "sensor.pap_papir_collection_2"
+            }
+          ]
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "custom:bubble-card",
+              "card_type": "pop-up",
+              "hash": "#lights",
+              "hide_backdrop": false,
+              "state": null,
+              "text": null,
+              "margin_top_desktop": "20px",
+              "margin_top_mobile": "-56px",
+              "shadow_opacity": 20,
+              "bg_opacity": 10,
+              "bg_blur": 10,
+              "button_type": "slider",
+              "name": "Kitchen + Bedroom",
+              "show_icon": true,
+              "show_name": true,
+              "close_on_click": false,
+              "background_update": false,
+              "trigger_close": false,
+              "tap_action": {
+                "action": "toggle"
+              },
+              "double_tap_action": {
+                "action": "none"
+              },
+              "hold_action": {
+                "action": "none"
+              },
+              "entity": "light.kokken",
+              "icon": "mdi:lightbulb-group",
+              "force_icon": false,
+              "show_state": true,
+              "show_last_updated": true,
+              "show_attribute": true
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "separator"
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "slider",
+              "entity": "light.kokken",
+              "name": "Kitchen",
+              "show_state": true,
+              "show_last_updated": false,
+              "show_attribute": true,
+              "sub_button": [],
+              "icon": "mdi:lightbulb-group"
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "slider",
+              "entity": "light.sovevaerelse",
+              "name": "Bedroom",
+              "show_state": true,
+              "show_last_updated": false,
+              "show_attribute": true,
+              "sub_button": [],
+              "icon": "mdi:bed-king-outline"
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "slider",
+              "entity": "light.over_kokken_bord",
+              "name": "Over kitchen table",
+              "show_state": true,
+              "show_last_updated": false,
+              "show_attribute": true,
+              "sub_button": [],
+              "icon": "mdi:table-furniture"
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "slider",
+              "entity": "light.kokken_strip_1",
+              "name": "Kitchen strip",
+              "show_state": true,
+              "show_last_updated": false,
+              "show_attribute": true,
+              "sub_button": [],
+              "icon": "mdi:led-strip-variant"
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "slider",
+              "entity": "light.hue_color_spot_1",
+              "name": "Bedroom spot 1",
+              "show_state": true,
+              "show_last_updated": false,
+              "show_attribute": true,
+              "sub_button": [],
+              "icon": "mdi:lightbulb-spot"
+            },
+            {
+              "type": "custom:bubble-card",
+              "card_type": "button",
+              "button_type": "slider",
+              "entity": "light.hue_color_spot_2",
+              "name": "Bedroom spot 2",
+              "show_state": true,
+              "show_last_updated": false,
+              "show_attribute": true,
+              "sub_button": [],
+              "icon": "mdi:lightbulb-spot"
+            }
+          ]
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "custom:bubble-card",
+              "card_type": "pop-up",
+              "hash": "#cameras",
+              "trigger_entity": "input_boolean.camera_thinksmart_full_screen_popup",
+              "trigger_state": "on",
+              "trigger_close": true,
+              "hide_backdrop": false,
+              "state": null,
+              "text": null,
+              "margin_top_desktop": "20px",
+              "margin_top_mobile": "-56px",
+              "shadow_opacity": 20,
+              "bg_opacity": 10,
+              "bg_blur": 10,
+              "background_update": false
+            },
+            {
+              "camera_view": "live",
+              "type": "picture-glance",
+              "entities": [],
+              "camera_image": "camera.kokken1",
+              "tap_action": {
+                "action": "none"
+              },
+              "hold_action": {
+                "action": "none"
+              }
+            },
+            {
+              "camera_view": "live",
+              "type": "picture-glance",
+              "entities": [],
+              "camera_image": "camera.stuen",
+              "tap_action": {
+                "action": "none"
+              },
+              "hold_action": {
+                "action": "none"
+              }
+            },
+            {
+              "camera_view": "live",
+              "type": "picture-glance",
+              "entities": [],
+              "camera_image": "camera.garage",
+              "tap_action": {
+                "action": "none"
+              },
+              "hold_action": {
+                "action": "none"
+              }
+            }
+          ]
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "custom:bubble-card",
+              "card_type": "pop-up",
+              "hash": "#weather",
+              "show_name": false,
+              "show_icon": false,
+              "margin_top_mobile": "-56px",
+              "hide_backdrop": true
+            },
+            {
+              "type": "iframe",
+              "url": "https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=default&metricWind=default&zoom=8&overlay=radar&product=radar&level=surface&lat=51.509&lon=-1.994",
+              "aspect_ratio": "135%"
+            }
+          ]
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "custom:bubble-card",
+              "card_type": "pop-up",
+              "hash": "#mealie",
+              "margin_top_mobile": "-56px",
+              "button_type": "name",
+              "show_icon": false,
+              "false": [],
+              "scrolling_effect": false,
+              "hide_backdrop": true
+            },
+            {
+              "type": "iframe",
+              "url": "https://recipes.siliconpixel.com",
+              "aspect_ratio": "140%"
+            }
+          ]
+        },
+        {
+          "type": "vertical-stack",
+          "cards": [
+            {
+              "type": "custom:bubble-card",
+              "card_type": "pop-up",
+              "hash": "#music",
+              "hide_backdrop": false,
+              "state": null,
+              "text": null,
+              "margin_top_desktop": "20px",
+              "margin_top_mobile": "-56px",
+              "shadow_opacity": 20,
+              "bg_opacity": 10,
+              "bg_blur": 10,
+              "button_type": "name",
+              "false": [],
+              "show_icon": false,
+              "scrolling_effect": false
+            },
+            {
+              "type": "iframe",
+              "url": "https://music.siliconpixel.com/#/home",
+              "aspect_ratio": "140%"
+            }
+          ]
+        },
+        {
+          "type": "custom:bubble-card",
+          "card_type": "horizontal-buttons-stack",
+          "1_link": "#lights",
+          "1_name": "",
+          "1_icon": "mdi:lightbulb-group",
+          "1_entity": null,
+          "hide_gradient": true,
+          "is_sidebar_hidden": false,
+          "2_name": "",
+          "2_icon": "mdi:cctv",
+          "2_link": "#cameras",
+          "3_link": "#weather",
+          "3_name": "",
+          "3_icon": "mdi:weather-hail",
+          "4_link": "/dashboard-tablet/plants",
+          "4_name": "",
+          "4_icon": "mdi:sprout",
+          "5_link": "/dashboard-tablet/solar",
+          "5_icon": "mdi:solar-power-variant",
+          "5_name": "",
+          "rise_animation": true,
+          "card_mod": {
+            "style": ".bubble-background {\n  background-color: transparent;\n}\n"
+          }
+        }
+      ],
+      "theme": "M3-D07-DarkOliveGreen"
+    },
+    {
+      "title": "Solar",
+      "path": "solar",
+      "background": "center / cover no-repeat fixed url('/local/images/backgrounds/leaf-darker-background.png')",
+      "type": "custom:vertical-layout",
+      "cards": [
+        {
+          "type": "custom:stack-in-card",
+          "mode": "vertical",
+          "card_mod": {
+            "style": "ha-card {\n  background: linear-gradient(145deg, rgba(26, 43, 29, 0.9) 0%, rgba(20, 34, 26, 0.72) 100%);\n  border: 1px solid rgba(165, 214, 167, 0.32);\n  border-radius: 24px;\n  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);\n  backdrop-filter: blur(10px);\n  padding: 8px 6px 10px 6px;\n}\n"
+          },
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "{{ (states('sensor.growatts_pv_power_total')|float(0) / 1000) | round(2) }} kW",
+                  "secondary": "Solar now",
+                  "icon": "mdi:solar-power-variant",
+                  "icon_color": "amber",
+                  "entity": "sensor.growatts_pv_power_total",
+                  "multiline_secondary": false,
+                  "fill_container": true,
+                  "card_mod": {
+                    "style": "ha-card {\n  min-height: 86px;\n  background: radial-gradient(circle at 15% 15%, rgba(246, 195, 68, 0.24), rgba(31, 40, 30, 0.88));\n  border: 1px solid rgba(246, 195, 68, 0.38);\n  border-radius: 18px;\n}\n:host {\n  --card-primary-font-size: 1.35rem;\n  --card-secondary-font-size: 0.88rem;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "{{ states('sensor.growatts_battery_soc') }} %",
+                  "secondary": "Battery",
+                  "icon": "mdi:battery",
+                  "icon_color": "{{ 'green' if states('sensor.growatts_battery_soc')|float(0) >= 60 else 'orange' if states('sensor.growatts_battery_soc')|float(0) >= 25 else 'red' }}",
+                  "entity": "sensor.growatts_battery_soc",
+                  "multiline_secondary": false,
+                  "fill_container": true,
+                  "card_mod": {
+                    "style": "ha-card {\n  min-height: 86px;\n  background: radial-gradient(circle at 15% 15%, rgba(102, 187, 106, 0.2), rgba(31, 40, 30, 0.88));\n  border: 1px solid rgba(102, 187, 106, 0.36);\n  border-radius: 18px;\n}\n:host {\n  --card-primary-font-size: 1.35rem;\n  --card-secondary-font-size: 0.88rem;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "{{ states('sensor.growatts_today_s_grid_import_2') }} kWh",
+                  "secondary": "Grid import",
+                  "icon": "mdi:transmission-tower-import",
+                  "icon_color": "blue",
+                  "entity": "sensor.growatts_today_s_grid_import_2",
+                  "multiline_secondary": false,
+                  "fill_container": true,
+                  "card_mod": {
+                    "style": "ha-card {\n  min-height: 86px;\n  background: radial-gradient(circle at 15% 15%, rgba(66, 165, 245, 0.2), rgba(31, 40, 30, 0.88));\n  border: 1px solid rgba(66, 165, 245, 0.38);\n  border-radius: 18px;\n}\n:host {\n  --card-primary-font-size: 1.35rem;\n  --card-secondary-font-size: 0.88rem;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "{{ states('sensor.growatts_today_s_grid_export_2') }} kWh",
+                  "secondary": "Grid export",
+                  "icon": "mdi:transmission-tower-export",
+                  "icon_color": "teal",
+                  "entity": "sensor.growatts_today_s_grid_export_2",
+                  "multiline_secondary": false,
+                  "fill_container": true,
+                  "card_mod": {
+                    "style": "ha-card {\n  min-height: 86px;\n  background: radial-gradient(circle at 15% 15%, rgba(38, 198, 218, 0.2), rgba(31, 40, 30, 0.88));\n  border: 1px solid rgba(38, 198, 218, 0.36);\n  border-radius: 18px;\n}\n:host {\n  --card-primary-font-size: 1.35rem;\n  --card-secondary-font-size: 0.88rem;\n}\n"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "custom:apexcharts-card",
+          "graph_span": "24h",
+          "span": {
+            "start": "day"
+          },
+          "header": {
+            "show": true,
+            "title": "Power Today",
+            "show_states": true,
+            "colorize_states": true
+          },
+          "series": [
+            {
+              "entity": "sensor.growatts_pv_power_total",
+              "name": "Solar",
+              "type": "area",
+              "color": "#f6c344",
+              "transform": "return Number(x) / 1000;",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            },
+            {
+              "entity": "sensor.growatts_house_load",
+              "name": "Home load",
+              "type": "line",
+              "color": "#90caf9",
+              "transform": "return Number(x) / 1000;",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            },
+            {
+              "entity": "sensor.growatts_grid_power",
+              "name": "Grid power",
+              "type": "line",
+              "color": "#26c6da",
+              "transform": "return Number(x) / 1000;",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            }
+          ],
+          "yaxis": [
+            {
+              "decimals": 2,
+              "min": 0,
+              "max": "|+0.2|"
+            }
+          ],
+          "apex_config": {
+            "chart": {
+              "height": 260
+            },
+            "stroke": {
+              "width": [
+                2,
+                3,
+                3
+              ],
+              "curve": "smooth"
+            },
+            "grid": {
+              "borderColor": "rgba(160, 186, 166, 0.2)",
+              "strokeDashArray": 4
+            },
+            "tooltip": {
+              "theme": "dark"
+            },
+            "legend": {
+              "position": "top"
+            }
+          },
+          "card_mod": {
+            "style": "ha-card {\n  margin-top: 10px;\n  background: linear-gradient(160deg, rgba(17, 32, 24, 0.92) 0%, rgba(16, 28, 23, 0.78) 100%);\n  border: 1px solid rgba(144, 202, 249, 0.25);\n  border-radius: 22px;\n  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32);\n}\n"
+          }
+        },
+        {
+          "type": "custom:apexcharts-card",
+          "chart_type": "donut",
+          "header": {
+            "show": true,
+            "title": "Energy Mix Today",
+            "show_states": true,
+            "colorize_states": true
+          },
+          "series": [
+            {
+              "entity": "sensor.growatts_today_s_solar_energy_2",
+              "name": "Solar",
+              "color": "#ffca28"
+            },
+            {
+              "entity": "sensor.growatts_today_s_grid_export_2",
+              "name": "Grid export",
+              "color": "#66bb6a"
+            },
+            {
+              "entity": "sensor.growatts_today_s_grid_import_2",
+              "name": "Grid import",
+              "color": "#42a5f5"
+            }
+          ],
+          "apex_config": {
+            "chart": {
+              "height": 280
+            },
+            "plotOptions": {
+              "pie": {
+                "donut": {
+                  "size": "64%"
+                }
+              }
+            },
+            "dataLabels": {
+              "enabled": true
+            },
+            "legend": {
+              "position": "bottom"
+            }
+          },
+          "card_mod": {
+            "style": "ha-card {\n  margin-top: 10px;\n  background: linear-gradient(155deg, rgba(24, 37, 26, 0.92) 0%, rgba(18, 27, 21, 0.78) 100%);\n  border: 1px solid rgba(255, 202, 40, 0.22);\n  border-radius: 22px;\n  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);\n}\n"
+          }
+        },
+        {
+          "type": "grid",
+          "columns": 2,
+          "square": false,
+          "cards": [
+            {
+              "type": "custom:mini-graph-card",
+              "name": "Battery SOC (24h)",
+              "entities": [
+                "sensor.growatts_battery_soc"
+              ],
+              "hours_to_show": 24,
+              "points_per_hour": 2,
+              "line_width": 3,
+              "show": {
+                "fill": true,
+                "state": true,
+                "icon": true
+              },
+              "color_thresholds": [
+                {
+                  "value": 15,
+                  "color": "#ef5350"
+                },
+                {
+                  "value": 40,
+                  "color": "#ffb74d"
+                },
+                {
+                  "value": 70,
+                  "color": "#66bb6a"
+                }
+              ],
+              "card_mod": {
+                "style": "ha-card {\n  background: linear-gradient(155deg, rgba(22, 36, 24, 0.92) 0%, rgba(16, 25, 20, 0.8) 100%);\n  border: 1px solid rgba(102, 187, 106, 0.3);\n  border-radius: 20px;\n  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);\n}\n"
+              }
+            },
+            {
+              "type": "entities",
+              "title": "Economy",
+              "state_color": true,
+              "entities": [
+                {
+                  "entity": "sensor.solar_panel_price",
+                  "name": "Panel price"
+                },
+                {
+                  "entity": "sensor.solar_savings",
+                  "name": "Savings"
+                },
+                {
+                  "entity": "sensor.solar_panel_left",
+                  "name": "Payback remaining"
+                },
+                {
+                  "entity": "sensor.power_consumption_daily",
+                  "name": "Power cost today"
+                }
+              ],
+              "card_mod": {
+                "style": "ha-card {\n  background: linear-gradient(155deg, rgba(20, 33, 24, 0.92) 0%, rgba(14, 23, 19, 0.8) 100%);\n  border: 1px solid rgba(129, 199, 132, 0.28);\n  border-radius: 20px;\n  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);\n}\n"
+              }
+            }
+          ]
+        },
+        {
+          "type": "custom:bubble-card",
+          "card_type": "horizontal-buttons-stack",
+          "1_link": "/dashboard-tablet/office",
+          "1_name": "",
+          "1_icon": "mdi:home",
+          "1_entity": null,
+          "hide_gradient": true,
+          "is_sidebar_hidden": false,
+          "2_name": "",
+          "2_icon": "mdi:lightbulb-group",
+          "2_link": "/dashboard-tablet/office#lights",
+          "3_link": "/dashboard-tablet/office#cameras",
+          "3_name": "",
+          "3_icon": "mdi:cctv",
+          "4_link": "/dashboard-tablet/office#weather",
+          "4_name": "",
+          "4_icon": "mdi:weather-hail",
+          "5_link": "/dashboard-tablet/plants",
+          "5_icon": "mdi:sprout",
+          "5_name": "",
+          "rise_animation": true,
+          "card_mod": {
+            "style": ".bubble-background {\n  background: linear-gradient(160deg, rgba(17, 31, 24, 0.7), rgba(12, 20, 16, 0.55));\n  border-radius: 18px;\n  border: 1px solid rgba(165, 214, 167, 0.22);\n  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);\n}\n"
+          }
+        }
+      ],
+      "theme": "M3-D07-DarkOliveGreen"
+    },
+    {
+      "title": "Plants",
+      "path": "plants",
+      "background": "center / cover no-repeat fixed url('/local/images/backgrounds/leaf-darker-background.png')",
+      "type": "custom:vertical-layout",
+      "cards": [
+        {
+          "type": "custom:stack-in-card",
+          "mode": "vertical",
+          "card_mod": {
+            "style": "ha-card {\n  background: linear-gradient(145deg, rgba(20, 45, 31, 0.92) 0%, rgba(16, 30, 24, 0.78) 100%);\n  border: 1px solid rgba(129, 199, 132, 0.35);\n  border-radius: 24px;\n  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);\n  backdrop-filter: blur(10px);\n  padding: 8px 6px 10px 6px;\n}\n"
+          },
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 3,
+              "square": false,
+              "cards": [
+                {
+                  "type": "custom:stack-in-card",
+                  "mode": "vertical",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "Tomatplante",
+                      "secondary": "{{ states('sensor.tomatplante_soil_moisture') }}% jordfugt",
+                      "icon": "mdi:sprout",
+                      "icon_color": "{% set m = states('sensor.tomatplante_soil_moisture') | float(0) %}{% if m < 25 %}red{% elif m < 40 %}orange{% elif m <= 70 %}green{% else %}blue{% endif %}",
+                      "entity": "sensor.tomatplante_soil_moisture"
+                    },
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "°C",
+                      "secondary": "{{ states('sensor.tomatplante_temperature') }} °C",
+                      "icon": "mdi:thermometer",
+                      "icon_color": "{% set t = states('sensor.tomatplante_temperature') | float(0) %}{% if t < 18 %}blue{% elif t <= 30 %}green{% else %}orange{% endif %}",
+                      "entity": "sensor.tomatplante_temperature"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:stack-in-card",
+                  "mode": "vertical",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "Palme vindue",
+                      "secondary": "{{ states('sensor.palmevindue_soil_moisture') }}% jordfugt",
+                      "icon": "mdi:palm-tree",
+                      "icon_color": "{% set m = states('sensor.palmevindue_soil_moisture') | float(0) %}{% if m < 25 %}red{% elif m < 40 %}orange{% elif m <= 70 %}green{% else %}blue{% endif %}",
+                      "entity": "sensor.palmevindue_soil_moisture"
+                    },
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "°C",
+                      "secondary": "{{ states('sensor.palmevindue_temperature') }} °C",
+                      "icon": "mdi:thermometer",
+                      "icon_color": "{% set t = states('sensor.palmevindue_temperature') | float(0) %}{% if t < 18 %}blue{% elif t <= 30 %}green{% else %}orange{% endif %}",
+                      "entity": "sensor.palmevindue_temperature"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:stack-in-card",
+                  "mode": "vertical",
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "Palme gulv",
+                      "secondary": "{{ states('sensor.palmegulv_soil_moisture') }}% jordfugt",
+                      "icon": "mdi:palm-tree",
+                      "icon_color": "{% set m = states('sensor.palmegulv_soil_moisture') | float(0) %}{% if m < 25 %}red{% elif m < 40 %}orange{% elif m <= 70 %}green{% else %}blue{% endif %}",
+                      "entity": "sensor.palmegulv_soil_moisture"
+                    },
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "primary": "°C",
+                      "secondary": "{{ states('sensor.palmegulv_temperature') }} °C",
+                      "icon": "mdi:thermometer",
+                      "icon_color": "{% set t = states('sensor.palmegulv_temperature') | float(0) %}{% if t < 18 %}blue{% elif t <= 30 %}green{% else %}orange{% endif %}",
+                      "entity": "sensor.palmegulv_temperature"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "custom:apexcharts-card",
+          "graph_span": "24h",
+          "header": {
+            "show": true,
+            "title": "Jordfugt - sidste 24 timer",
+            "show_states": true,
+            "colorize_states": true
+          },
+          "series": [
+            {
+              "entity": "sensor.tomatplante_soil_moisture",
+              "name": "Tomatplante",
+              "type": "line",
+              "color": "#66bb6a",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            },
+            {
+              "entity": "sensor.palmevindue_soil_moisture",
+              "name": "Palme vindue",
+              "type": "line",
+              "color": "#42a5f5",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            },
+            {
+              "entity": "sensor.palmegulv_soil_moisture",
+              "name": "Palme gulv",
+              "type": "line",
+              "color": "#ffb74d",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            }
+          ],
+          "yaxis": [
+            {
+              "min": 0,
+              "max": 100,
+              "decimals": 0
+            }
+          ],
+          "apex_config": {
+            "chart": {
+              "height": 270
+            },
+            "stroke": {
+              "width": 3,
+              "curve": "smooth"
+            },
+            "grid": {
+              "borderColor": "rgba(160, 186, 166, 0.2)",
+              "strokeDashArray": 4
+            },
+            "legend": {
+              "position": "top"
+            }
+          },
+          "card_mod": {
+            "style": "ha-card {\n  margin-top: 10px;\n  background: linear-gradient(160deg, rgba(18, 37, 28, 0.92) 0%, rgba(14, 28, 22, 0.8) 100%);\n  border: 1px solid rgba(129, 199, 132, 0.28);\n  border-radius: 22px;\n  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32);\n}\n"
+          }
+        },
+        {
+          "type": "custom:apexcharts-card",
+          "graph_span": "24h",
+          "header": {
+            "show": true,
+            "title": "Temperatur - sidste 24 timer",
+            "show_states": true,
+            "colorize_states": true
+          },
+          "series": [
+            {
+              "entity": "sensor.tomatplante_temperature",
+              "name": "Tomatplante",
+              "type": "area",
+              "color": "#ef5350",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            },
+            {
+              "entity": "sensor.palmevindue_temperature",
+              "name": "Palme vindue",
+              "type": "line",
+              "color": "#ab47bc",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            },
+            {
+              "entity": "sensor.palmegulv_temperature",
+              "name": "Palme gulv",
+              "type": "line",
+              "color": "#ffa726",
+              "group_by": {
+                "duration": "10min",
+                "func": "avg"
+              }
+            }
+          ],
+          "apex_config": {
+            "chart": {
+              "height": 270
+            },
+            "stroke": {
+              "width": [
+                2,
+                3,
+                3
+              ],
+              "curve": "smooth"
+            },
+            "grid": {
+              "borderColor": "rgba(171, 71, 188, 0.2)",
+              "strokeDashArray": 4
+            },
+            "legend": {
+              "position": "top"
+            }
+          },
+          "card_mod": {
+            "style": "ha-card {\n  margin-top: 10px;\n  background: linear-gradient(160deg, rgba(30, 23, 35, 0.9) 0%, rgba(18, 22, 30, 0.8) 100%);\n  border: 1px solid rgba(171, 71, 188, 0.26);\n  border-radius: 22px;\n  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32);\n}\n"
+          }
+        },
+        {
+          "type": "entities",
+          "title": "Sensor status",
+          "state_color": true,
+          "entities": [
+            {
+              "entity": "sensor.tomatplante_soil_moisture",
+              "name": "Tomatplante fugt"
+            },
+            {
+              "entity": "sensor.tomatplante_temperature",
+              "name": "Tomatplante temperatur"
+            },
+            {
+              "entity": "sensor.tomatplante_battery",
+              "name": "Tomatplante batteri"
+            },
+            {
+              "entity": "sensor.palmevindue_soil_moisture",
+              "name": "Palme vindue fugt"
+            },
+            {
+              "entity": "sensor.palmevindue_temperature",
+              "name": "Palme vindue temperatur"
+            },
+            {
+              "entity": "sensor.palmevindue_battery",
+              "name": "Palme vindue batteri"
+            },
+            {
+              "entity": "sensor.palmegulv_soil_moisture",
+              "name": "Palme gulv fugt"
+            },
+            {
+              "entity": "sensor.palmegulv_temperature",
+              "name": "Palme gulv temperatur"
+            },
+            {
+              "entity": "sensor.palmegulv_battery",
+              "name": "Palme gulv batteri"
+            }
+          ],
+          "card_mod": {
+            "style": "ha-card {\n  margin-top: 10px;\n  background: linear-gradient(160deg, rgba(17, 30, 23, 0.92) 0%, rgba(13, 24, 19, 0.8) 100%);\n  border: 1px solid rgba(165, 214, 167, 0.24);\n  border-radius: 22px;\n  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);\n}\n"
+          }
+        },
+        {
+          "type": "custom:bubble-card",
+          "card_type": "horizontal-buttons-stack",
+          "1_link": "/dashboard-tablet/office",
+          "1_name": "",
+          "1_icon": "mdi:home",
+          "1_entity": null,
+          "hide_gradient": true,
+          "is_sidebar_hidden": false,
+          "2_name": "",
+          "2_icon": "mdi:solar-power-variant",
+          "2_link": "/dashboard-tablet/solar",
+          "3_link": "/dashboard-tablet/office#lights",
+          "3_name": "",
+          "3_icon": "mdi:lightbulb-group",
+          "4_link": "/dashboard-tablet/office#cameras",
+          "4_name": "",
+          "4_icon": "mdi:cctv",
+          "5_link": "/dashboard-tablet/office#weather",
+          "5_icon": "mdi:weather-hail",
+          "5_name": "",
+          "rise_animation": true,
+          "card_mod": {
+            "style": ".bubble-background {\n  background: linear-gradient(160deg, rgba(17, 31, 24, 0.7), rgba(12, 20, 16, 0.55));\n  border-radius: 18px;\n  border: 1px solid rgba(165, 214, 167, 0.22);\n  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);\n}\n"
+          }
+        }
+      ],
+      "theme": "M3-D07-DarkOliveGreen"
+    }
+  ],
+  "title": "Office Panel"
+}

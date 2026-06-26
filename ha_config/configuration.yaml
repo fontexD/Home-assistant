@@ -52,6 +52,7 @@ template:
         attributes:
           start_hour: "{{ states('input_text.lowest_three_hour_start_hour') }}"
   - !include template_sensors.yaml
+  - !include template_solar_savings.yaml
 
 python_script:
 
@@ -83,6 +84,13 @@ influxdb:
       - sensor.growatts_pv_power_total
       - sensor.growatts_today_s_solar_energy_2
       - sensor.nordpool_kwh_dk1_dkk_3_10_025
+
+recorder:
+  db_url: !secret recorder_db_url
+  purge_keep_days: 730
+  auto_purge: true
+  auto_repack: true
+
 logger:
   default: warning
   logs:

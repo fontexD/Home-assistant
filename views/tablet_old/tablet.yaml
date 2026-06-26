@@ -33,6 +33,11 @@ sidebar:
       active: true
       icon: mdi:sofa
     - action: navigate
+      navigation_path: /dashboard-tablet/tablet-lys
+      name: Lys
+      active: true
+      icon: mdi:lightbulb-group
+    - action: navigate
       navigation_path: /dashboard-tablet/tablet-sovevarelse
       name: Soveværelse
       active: true
@@ -73,7 +78,12 @@ sidebar:
       active: true
       icon: mdi:solar-panel
     - action: navigate
-      navigation_path: /dashboard-tablet/tablet-Støvsuger
+      navigation_path: /dashboard-tablet/tablet-solar
+      name: Solar
+      active: true
+      icon: mdi:solar-power-variant
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablet-stovsuger
       name: Støvsuger
       active: true
       icon: mdi:robot-vacuum
@@ -401,26 +411,78 @@ views:
           - calendar.pfonvig_gmail_com
       - type: horizontal-stack
         cards:
-          - show_state: true
-            show_name: false
-            camera_view: auto
-            type: picture-entity
-            entity: sensor.restaffald_mad
-            image: /local/mad.png
-            name: ''
-          - type: picture-entity
-            entity: sensor.pap_papir
-            image: /local/pap.png
-            name: Pap Papir
-            show_state: true
-            show_name: false
-          - show_state: true
-            show_name: false
-            camera_view: auto
-            type: picture-entity
-            entity: sensor.glas_metal_hard_plast
-            image: /local/metal.png
-            name: GLas Metal HårdPlast
+          - type: custom:mushroom-template-card
+            entity: sensor.restaffald_collection_2
+            icon: mdi:trash-can-outline
+            primary: Restaffald
+            secondary: >-
+              {% set d = states('sensor.restaffald_collection_2') %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                {% set d = states('sensor.restaffald_collection') %}
+              {% endif %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                {% set d = states('sensor.restaffald_mad') %}
+              {% endif %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                Ingen dato fundet
+              {% else %}
+                {{ as_datetime(d).strftime('%d-%m-%Y') }}
+              {% endif %}
+            icon_color: >-
+              {% if is_state('sensor.is_restaffald_collection_tomorrow', 'True') or is_state('sensor.is_restaffald_collection_tomorrow', 'on') %}
+                red
+              {% else %}
+                green
+              {% endif %}
+            multiline_secondary: false
+          - type: custom:mushroom-template-card
+            entity: sensor.pap_papir_collection_2
+            icon: mdi:newspaper-variant-outline
+            primary: Pap og papir
+            secondary: >-
+              {% set d = states('sensor.pap_papir_collection_2') %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                {% set d = states('sensor.pap_papir_collection') %}
+              {% endif %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                {% set d = states('sensor.pap_papir') %}
+              {% endif %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                Ingen dato fundet
+              {% else %}
+                {{ as_datetime(d).strftime('%d-%m-%Y') }}
+              {% endif %}
+            icon_color: >-
+              {% if is_state('sensor.is_pap_papir_collection_tomorrow', 'True') or is_state('sensor.is_pap_papir_collection_tomorrow', 'on') %}
+                red
+              {% else %}
+                blue
+              {% endif %}
+            multiline_secondary: false
+          - type: custom:mushroom-template-card
+            entity: sensor.glas_metal_hard_plast_collection_2
+            icon: mdi:bottle-soda-outline
+            primary: Glas, metal, plast
+            secondary: >-
+              {% set d = states('sensor.glas_metal_hard_plast_collection_2') %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                {% set d = states('sensor.glas_metal_hard_plast_collection') %}
+              {% endif %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                {% set d = states('sensor.glas_metal_hard_plast') %}
+              {% endif %}
+              {% if d in ['unknown','unavailable','none','None',''] %}
+                Ingen dato fundet
+              {% else %}
+                {{ as_datetime(d).strftime('%d-%m-%Y') }}
+              {% endif %}
+            icon_color: >-
+              {% if is_state('sensor.is_glas_metal_hard_plast_collection_tomorrow', 'True') or is_state('sensor.is_glas_metal_hard_plast_collection_tomorrow', 'on') %}
+                red
+              {% else %}
+                teal
+              {% endif %}
+            multiline_secondary: false
       - type: horizontal-stack
         cards:
           - show_name: true
@@ -456,6 +518,30 @@ views:
               action: none
             show_state: false
     path: tablet-hjem
+  - theme: Backend-selected
+    title: Lys
+    path: tablet-lys
+    icon: mdi:lightbulb-group
+    badges: []
+    cards:
+      - type: entities
+        title: Hurtig lysstyring
+        state_color: true
+        entities:
+          - entity: light.gang_1
+          - entity: light.gang_2
+          - entity: light.spiral
+          - entity: light.spot_1_stue
+          - entity: light.spot_2
+          - entity: light.bordlampe
+          - entity: light.strikkelampe
+          - entity: light.panton
+      - type: area
+        area: gang
+      - type: area
+        area: vaerelse
+      - type: area
+        area: sovevaerelse
   - title: Gang
     path: tablet-gang
     subview: false
@@ -506,7 +592,7 @@ views:
   - theme: Backend-selected
     title: Værelse
     path: tablet-varelse
-    icon: ''
+    icon: mdi:bed
     badges: []
     cards:
       - type: entities
@@ -1248,7 +1334,7 @@ views:
   - theme: Backend-selected
     title: El rum
     path: tablet-eloverblik
-    icon: ''
+    icon: mdi:chart-line
     badges: []
     cards:
       - type: entities
@@ -1749,6 +1835,93 @@ views:
           - type: custom:webrtc-camera
             url: vaske-rum
   - theme: Backend-selected
+    title: Solar
+    path: tablet-solar
+    icon: mdi:solar-power-variant
+    badges: []
+    cards:
+      - type: grid
+        square: false
+        columns: 2
+        cards:
+          - type: entities
+            title: Live energi
+            entities:
+              - entity: sensor.growatts_pv_power_total_kw
+                name: Hus PV effekt
+              - entity: sensor.skur_pv_power_total_kw
+                name: Skur PV effekt
+              - entity: sensor.growatts_battery_soc
+                name: Hus batteri SoC
+              - entity: sensor.skur_battery_soc
+                name: Skur batteri SoC
+              - entity: sensor.growatts_today_s_grid_import
+                name: Grid import i dag
+              - entity: sensor.growatts_today_s_grid_export
+                name: Grid eksport i dag
+          - type: custom:mini-graph-card
+            name: PV produktion i dag
+            icon: mdi:solar-panel-large
+            hour24: true
+            hours_to_show: 24
+            points_per_hour: 2
+            line_width: 3
+            show:
+              labels: false
+              labels_secondary: false
+              smoothing: false
+            entities:
+              - entity: sensor.growatts_today_s_solar_energy
+                name: Hus Growatt
+                color: '#ff9800'
+              - entity: sensor.skur_today_s_solar_energy
+                name: Skur Growatt
+                color: '#42a5f5'
+              - entity: sensor.delta_daglig
+                name: Hus Delta
+                color: '#66bb6a'
+                y_axis: secondary
+      - type: custom:mini-graph-card
+        name: Import / eksport
+        icon: mdi:transmission-tower
+        hour24: true
+        hours_to_show: 24
+        points_per_hour: 3
+        line_width: 3
+        show:
+          labels: false
+          labels_secondary: false
+          smoothing: false
+        entities:
+          - entity: sensor.growatts_today_s_grid_import
+            name: Import
+            color: '#ef5350'
+          - entity: sensor.growatts_today_s_grid_export
+            name: Eksport
+            color: '#66bb6a'
+      - type: entities
+        title: Sol økonomi
+        entities:
+          - entity: sensor.solar_panel_price
+            name: Anlægspris
+          - entity: sensor.solar_savings
+            name: Besparelse
+          - entity: sensor.solar_panel_left
+            name: Mangler at blive tjent hjem
+          - entity: sensor.self_consumption
+            name: Eget forbrug
+          - entity: sensor.power_consumption_daily
+            name: Daglig værdi af eget forbrug
+      - type: markdown
+        title: Solar status
+        content: >-
+          {% set total = states('sensor.solceller_total') %}
+          {% set today = states('sensor.growatts_today_s_solar_energy') %}
+          {% set left = states('sensor.solar_panel_left') %}
+          **Total produceret:** {{ total }} kWh  
+          **I dag (hus):** {{ today }} kWh  
+          **Manglende tilbagebetaling:** {{ left }} kr
+  - theme: Backend-selected
     title: solceller
     path: tablet-solceller
     icon: mdi:solar-panel
@@ -1940,7 +2113,7 @@ views:
             icon_color: green
   - theme: Backend-selected
     title: Støvsuger
-    path: tablet-Støvsuger
+    path: tablet-stovsuger
     icon: mdi:vacuum
     badges: []
     cards:
@@ -1952,13 +2125,4 @@ views:
         calibration_source:
           camera: true
         two_finger_pan: false
-  - title: Eloverblik
-    path: eloverblik
-    icon: ⚡
-    badges: []
-    cards: []
-  - title: test
-    path: test
-    type: custom:grid-layout
-    cards: []
 title: Tablet

@@ -2,3 +2,10 @@
   region: "DK1" # This can be skipped if you want Kr.sand
   VAT: True
 
+- platform: danfoss_scrape
+  name: "Danfoss Session Data"
+  host: "192.168.10.31"
+  username: "scrape"
+  password: "atibox123"
+  scan_interval: 60
+

@@ -1,0 +1,1 @@
+"""Danfoss scrape custom integration."""

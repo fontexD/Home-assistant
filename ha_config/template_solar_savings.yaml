@@ -1,0 +1,283 @@
+triggers:
+  - trigger: time_pattern
+    minutes: "/15"
+    id: tick
+  - trigger: event
+    event_type: solar_savings_tick
+    id: tick
+
+sensor:
+  - name: "Solar Export Value Today"
+    unique_id: solar_export_value_today
+    default_entity_id: sensor.solar_export_value_today
+    unit_of_measurement: "kr"
+    state: >
+      {% set today = now().strftime('%Y-%m-%d') %}
+      {% set last_day = (this.attributes.get('last_calc_day') if this is defined else today) | string %}
+      {% set day_changed = last_day != today %}
+      {% set max_interval_kwh = 10 %}
+      {% set price = states('sensor.powercost_spotprice_vat') | float(0) %}
+      {% set export_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+      {% set export_last = (this.attributes.get('last_export_kwh') if this is defined else export_now) | float(export_now) %}
+      {% set export_delta = export_now - export_last %}
+      {% set export_delta = 0 if export_delta < 0 else export_delta %}
+      {% set export_delta = 0 if export_delta > max_interval_kwh else export_delta %}
+      {% set running = (this.state if this is defined else 0) | float(0) %}
+      {% set running = 0 if day_changed else running %}
+      {{ (running + (export_delta * price)) | round(4) }}
+    attributes:
+      last_export_kwh: "{{ states('sensor.growatts_today_s_grid_export_2') | float(0) }}"
+      last_calc_day: "{{ now().strftime('%Y-%m-%d') }}"
+      interval_minutes: 15
+      interval_export_kwh: >
+        {% set max_interval_kwh = 10 %}
+        {% set now_v = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+        {% set last_v = (this.attributes.get('last_export_kwh') if this is defined else now_v) | float(now_v) %}
+        {% set d = now_v - last_v %}
+        {% set d = 0 if d < 0 else d %}
+        {% set d = 0 if d > max_interval_kwh else d %}
+        {{ d | round(4) }}
+      price_used_kr_kwh: "{{ states('sensor.powercost_spotprice_vat') | float(0) }}"
+
+  - name: "Solar Self Consumption Value Today"
+    unique_id: solar_self_consumption_value_today
+    default_entity_id: sensor.solar_self_consumption_value_today
+    unit_of_measurement: "kr"
+    state: >
+      {% set today = now().strftime('%Y-%m-%d') %}
+      {% set last_day = (this.attributes.get('last_calc_day') if this is defined else today) | string %}
+      {% set day_changed = last_day != today %}
+      {% set max_interval_kwh = 10 %}
+      {% set price = states('sensor.powercost_current_price_vat') | float(0) %}
+      {% set prod_now = states('sensor.solar_combined_production_today') | float(0) %}
+      {% set prod_last = (this.attributes.get('last_prod_kwh') if this is defined else prod_now) | float(prod_now) %}
+      {% set exp_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+      {% set exp_last = (this.attributes.get('last_export_kwh') if this is defined else exp_now) | float(exp_now) %}
+      {% set prod_delta = prod_now - prod_last %}
+      {% set exp_delta = exp_now - exp_last %}
+      {% set prod_delta = 0 if prod_delta < 0 else prod_delta %}
+      {% set exp_delta = 0 if exp_delta < 0 else exp_delta %}
+      {% set self_delta = prod_delta - exp_delta %}
+      {% set self_delta = 0 if self_delta < 0 else self_delta %}
+      {% set self_delta = 0 if self_delta > max_interval_kwh else self_delta %}
+      {% set running = (this.state if this is defined else 0) | float(0) %}
+      {% set running = 0 if day_changed else running %}
+      {{ (running + (self_delta * price)) | round(4) }}
+    attributes:
+      last_prod_kwh: "{{ states('sensor.solar_combined_production_today') | float(0) }}"
+      last_export_kwh: "{{ states('sensor.growatts_today_s_grid_export_2') | float(0) }}"
+      last_calc_day: "{{ now().strftime('%Y-%m-%d') }}"
+      interval_minutes: 15
+      interval_self_consumed_kwh: >
+        {% set max_interval_kwh = 10 %}
+        {% set prod_now = states('sensor.solar_combined_production_today') | float(0) %}
+        {% set prod_last = (this.attributes.get('last_prod_kwh') if this is defined else prod_now) | float(prod_now) %}
+        {% set exp_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+        {% set exp_last = (this.attributes.get('last_export_kwh') if this is defined else exp_now) | float(exp_now) %}
+        {% set prod_delta = prod_now - prod_last %}
+        {% set exp_delta = exp_now - exp_last %}
+        {% set prod_delta = 0 if prod_delta < 0 else prod_delta %}
+        {% set exp_delta = 0 if exp_delta < 0 else exp_delta %}
+        {% set self_delta = prod_delta - exp_delta %}
+        {% set self_delta = 0 if self_delta < 0 else self_delta %}
+        {% set self_delta = 0 if self_delta > max_interval_kwh else self_delta %}
+        {{ self_delta | round(4) }}
+      price_used_kr_kwh: "{{ states('sensor.powercost_current_price_vat') | float(0) }}"
+
+  - name: "Solar Export Value Current Month"
+    unique_id: solar_export_value_current_month
+    default_entity_id: sensor.solar_export_value_current_month
+    unit_of_measurement: "kr"
+    state: >
+      {% set today_key = now().strftime('%Y-%m-%d') %}
+      {% set this_month = now().strftime('%Y-%m') %}
+      {% set last_month = (this.attributes.get('last_calc_month') if this is defined else this_month) | string %}
+      {% set month_changed = last_month != this_month %}
+      {% set max_interval_kwh = 10 %}
+      {% set last_source_day = (this.attributes.get('last_source_day') if this is defined else today_key) | string %}
+      {% set source_day_changed = last_source_day != today_key %}
+      {% set price = states('sensor.powercost_spotprice_vat') | float(0) %}
+      {% set export_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+      {% set export_last = (this.attributes.get('last_export_kwh') if this is defined else export_now) | float(export_now) %}
+      {% set export_delta_raw = export_now - export_last %}
+      {% if export_delta_raw < 0 %}
+        {% set export_delta = export_now if source_day_changed else 0 %}
+      {% else %}
+        {% set export_delta = export_delta_raw %}
+      {% endif %}
+      {% set export_delta = 0 if export_delta > max_interval_kwh else export_delta %}
+      {% set running = (this.state if this is defined else states('sensor.solar_export_value_today')) | float(0) %}
+      {% set running = 0 if month_changed else running %}
+      {{ (running + (export_delta * price)) | round(4) }}
+    attributes:
+      last_export_kwh: "{{ states('sensor.growatts_today_s_grid_export_2') | float(0) }}"
+      last_source_day: "{{ now().strftime('%Y-%m-%d') }}"
+      last_calc_month: "{{ now().strftime('%Y-%m') }}"
+      interval_minutes: 15
+      interval_export_kwh: >
+        {% set max_interval_kwh = 10 %}
+        {% set now_v = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+        {% set last_v = (this.attributes.get('last_export_kwh') if this is defined else now_v) | float(now_v) %}
+        {% set d = now_v - last_v %}
+        {% set d = 0 if d < 0 else d %}
+        {% set d = 0 if d > max_interval_kwh else d %}
+        {{ d | round(4) }}
+      price_used_kr_kwh: "{{ states('sensor.powercost_spotprice_vat') | float(0) }}"
+
+  - name: "Solar Self Consumption Value Current Month"
+    unique_id: solar_self_consumption_value_current_month
+    default_entity_id: sensor.solar_self_consumption_value_current_month
+    unit_of_measurement: "kr"
+    state: >
+      {% set today_key = now().strftime('%Y-%m-%d') %}
+      {% set this_month = now().strftime('%Y-%m') %}
+      {% set last_month = (this.attributes.get('last_calc_month') if this is defined else this_month) | string %}
+      {% set month_changed = last_month != this_month %}
+      {% set max_interval_kwh = 10 %}
+      {% set last_source_day = (this.attributes.get('last_source_day') if this is defined else today_key) | string %}
+      {% set source_day_changed = last_source_day != today_key %}
+      {% set price = states('sensor.powercost_current_price_vat') | float(0) %}
+      {% set prod_now = states('sensor.solar_combined_production_today') | float(0) %}
+      {% set prod_last = (this.attributes.get('last_prod_kwh') if this is defined else prod_now) | float(prod_now) %}
+      {% set exp_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+      {% set exp_last = (this.attributes.get('last_export_kwh') if this is defined else exp_now) | float(exp_now) %}
+      {% set prod_delta_raw = prod_now - prod_last %}
+      {% set exp_delta_raw = exp_now - exp_last %}
+      {% if prod_delta_raw < 0 %}
+        {% set prod_delta = prod_now if source_day_changed else 0 %}
+      {% else %}
+        {% set prod_delta = prod_delta_raw %}
+      {% endif %}
+      {% if exp_delta_raw < 0 %}
+        {% set exp_delta = exp_now if source_day_changed else 0 %}
+      {% else %}
+        {% set exp_delta = exp_delta_raw %}
+      {% endif %}
+      {% set self_delta = prod_delta - exp_delta %}
+      {% set self_delta = 0 if self_delta < 0 else self_delta %}
+      {% set self_delta = 0 if self_delta > max_interval_kwh else self_delta %}
+      {% set running = (this.state if this is defined else states('sensor.solar_self_consumption_value_today')) | float(0) %}
+      {% set running = 0 if month_changed else running %}
+      {% set correction_id = '2026-06-23-self-month-spike-fix' %}
+      {% set correction_kr = 52.4203 %}
+      {% set already_corrected = (this.attributes.get('correction_id') if this is defined else '') == correction_id %}
+      {% if (not already_corrected) and (now().strftime('%Y-%m') == '2026-06') and (running >= correction_kr) %}
+        {% set running = running - correction_kr %}
+      {% endif %}
+      {{ (running + (self_delta * price)) | round(4) }}
+    attributes:
+      last_prod_kwh: "{{ states('sensor.solar_combined_production_today') | float(0) }}"
+      last_export_kwh: "{{ states('sensor.growatts_today_s_grid_export_2') | float(0) }}"
+      last_source_day: "{{ now().strftime('%Y-%m-%d') }}"
+      last_calc_month: "{{ now().strftime('%Y-%m') }}"
+      correction_id: "2026-06-23-self-month-spike-fix"
+      interval_minutes: 15
+      interval_self_consumed_kwh: >
+        {% set max_interval_kwh = 10 %}
+        {% set prod_now = states('sensor.solar_combined_production_today') | float(0) %}
+        {% set prod_last = (this.attributes.get('last_prod_kwh') if this is defined else prod_now) | float(prod_now) %}
+        {% set exp_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+        {% set exp_last = (this.attributes.get('last_export_kwh') if this is defined else exp_now) | float(exp_now) %}
+        {% set prod_delta = prod_now - prod_last %}
+        {% set exp_delta = exp_now - exp_last %}
+        {% set prod_delta = 0 if prod_delta < 0 else prod_delta %}
+        {% set exp_delta = 0 if exp_delta < 0 else exp_delta %}
+        {% set self_delta = prod_delta - exp_delta %}
+        {% set self_delta = 0 if self_delta < 0 else self_delta %}
+        {% set self_delta = 0 if self_delta > max_interval_kwh else self_delta %}
+        {{ self_delta | round(4) }}
+      price_used_kr_kwh: "{{ states('sensor.powercost_current_price_vat') | float(0) }}"
+
+  - name: "Solar Export Value Total Ever"
+    unique_id: solar_export_value_total_ever
+    default_entity_id: sensor.solar_export_value_total_ever
+    unit_of_measurement: "kr"
+    state: >
+      {% set today_key = now().strftime('%Y-%m-%d') %}
+      {% set max_interval_kwh = 10 %}
+      {% set price = states('sensor.powercost_spotprice_vat') | float(0) %}
+      {% set export_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+      {% set export_last = (this.attributes.get('last_export_kwh') if this is defined else export_now) | float(export_now) %}
+      {% set last_source_day = (this.attributes.get('last_source_day') if this is defined else today_key) | string %}
+      {% set source_day_changed = last_source_day != today_key %}
+      {% set export_delta_raw = export_now - export_last %}
+      {% if export_delta_raw < 0 %}
+        {% set export_delta = export_now if source_day_changed else 0 %}
+      {% else %}
+        {% set export_delta = export_delta_raw %}
+      {% endif %}
+      {% set export_delta = 0 if export_delta > max_interval_kwh else export_delta %}
+      {% set running = (this.state if this is defined else states('sensor.solar_export_value_current_month')) | float(0) %}
+      {{ (running + (export_delta * price)) | round(4) }}
+    attributes:
+      last_export_kwh: "{{ states('sensor.growatts_today_s_grid_export_2') | float(0) }}"
+      last_source_day: "{{ now().strftime('%Y-%m-%d') }}"
+      interval_minutes: 15
+      interval_export_kwh: >
+        {% set max_interval_kwh = 10 %}
+        {% set now_v = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+        {% set last_v = (this.attributes.get('last_export_kwh') if this is defined else now_v) | float(now_v) %}
+        {% set d = now_v - last_v %}
+        {% set d = 0 if d < 0 else d %}
+        {% set d = 0 if d > max_interval_kwh else d %}
+        {{ d | round(4) }}
+      price_used_kr_kwh: "{{ states('sensor.powercost_spotprice_vat') | float(0) }}"
+
+  - name: "Solar Self Consumption Value Total Ever"
+    unique_id: solar_self_consumption_value_total_ever
+    default_entity_id: sensor.solar_self_consumption_value_total_ever
+    unit_of_measurement: "kr"
+    state: >
+      {% set today_key = now().strftime('%Y-%m-%d') %}
+      {% set max_interval_kwh = 10 %}
+      {% set price = states('sensor.powercost_current_price_vat') | float(0) %}
+      {% set prod_now = states('sensor.solar_combined_production_today') | float(0) %}
+      {% set prod_last = (this.attributes.get('last_prod_kwh') if this is defined else prod_now) | float(prod_now) %}
+      {% set exp_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+      {% set exp_last = (this.attributes.get('last_export_kwh') if this is defined else exp_now) | float(exp_now) %}
+      {% set last_source_day = (this.attributes.get('last_source_day') if this is defined else today_key) | string %}
+      {% set source_day_changed = last_source_day != today_key %}
+      {% set prod_delta_raw = prod_now - prod_last %}
+      {% set exp_delta_raw = exp_now - exp_last %}
+      {% if prod_delta_raw < 0 %}
+        {% set prod_delta = prod_now if source_day_changed else 0 %}
+      {% else %}
+        {% set prod_delta = prod_delta_raw %}
+      {% endif %}
+      {% if exp_delta_raw < 0 %}
+        {% set exp_delta = exp_now if source_day_changed else 0 %}
+      {% else %}
+        {% set exp_delta = exp_delta_raw %}
+      {% endif %}
+      {% set self_delta = prod_delta - exp_delta %}
+      {% set self_delta = 0 if self_delta < 0 else self_delta %}
+      {% set self_delta = 0 if self_delta > max_interval_kwh else self_delta %}
+      {% set running = (this.state if this is defined else states('sensor.solar_self_consumption_value_current_month')) | float(0) %}
+      {% set correction_id = '2026-06-23-self-ever-spike-fix' %}
+      {% set correction_kr = 52.4203 %}
+      {% set already_corrected = (this.attributes.get('correction_id') if this is defined else '') == correction_id %}
+      {% if (not already_corrected) and (now().strftime('%Y-%m') == '2026-06') and (running >= correction_kr) %}
+        {% set running = running - correction_kr %}
+      {% endif %}
+      {{ (running + (self_delta * price)) | round(4) }}
+    attributes:
+      last_prod_kwh: "{{ states('sensor.solar_combined_production_today') | float(0) }}"
+      last_export_kwh: "{{ states('sensor.growatts_today_s_grid_export_2') | float(0) }}"
+      last_source_day: "{{ now().strftime('%Y-%m-%d') }}"
+      correction_id: "2026-06-23-self-ever-spike-fix"
+      interval_minutes: 15
+      interval_self_consumed_kwh: >
+        {% set max_interval_kwh = 10 %}
+        {% set prod_now = states('sensor.solar_combined_production_today') | float(0) %}
+        {% set prod_last = (this.attributes.get('last_prod_kwh') if this is defined else prod_now) | float(prod_now) %}
+        {% set exp_now = states('sensor.growatts_today_s_grid_export_2') | float(0) %}
+        {% set exp_last = (this.attributes.get('last_export_kwh') if this is defined else exp_now) | float(exp_now) %}
+        {% set prod_delta = prod_now - prod_last %}
+        {% set exp_delta = exp_now - exp_last %}
+        {% set prod_delta = 0 if prod_delta < 0 else prod_delta %}
+        {% set exp_delta = 0 if exp_delta < 0 else exp_delta %}
+        {% set self_delta = prod_delta - exp_delta %}
+        {% set self_delta = 0 if self_delta < 0 else self_delta %}
+        {% set self_delta = 0 if self_delta > max_interval_kwh else self_delta %}
+        {{ self_delta | round(4) }}
+      price_used_kr_kwh: "{{ states('sensor.powercost_current_price_vat') | float(0) }}"

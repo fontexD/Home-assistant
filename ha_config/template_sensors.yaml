@@ -117,3 +117,161 @@ sensor:
     unique_id: is_glas_metal_hard_plast_collection_tomorrow
     default_entity_id: sensor.is_glas_metal_hard_plast_collection_tomorrow
     state: "{{ (as_datetime(states('sensor.glas_metal_hard_plast_collection_2')) - timedelta(days=1)).strftime('%Y-%m-%d') == now().strftime('%Y-%m-%d') }}"
+
+  - name: "Danfoss Current Power"
+    unique_id: danfoss_current_power
+    default_entity_id: sensor.danfoss_current_power
+    state: >
+      {% set v1 = state_attr('sensor.danfoss_session_data', 'current_kw') %}
+      {% set v2 = state_attr('sensor.danfoss_session_data_2', 'current_kw') %}
+      {{ (v1 if is_number(v1) else v2) | float(none) }}
+    availability: >
+      {% set v1 = state_attr('sensor.danfoss_session_data', 'current_kw') %}
+      {% set v2 = state_attr('sensor.danfoss_session_data_2', 'current_kw') %}
+      {{ is_number(v1) or is_number(v2) }}
+    unit_of_measurement: "kW"
+    device_class: power
+    state_class: measurement
+
+  - name: "Danfoss Production Today"
+    unique_id: danfoss_production_today
+    default_entity_id: sensor.danfoss_production_today
+    state: >
+      {% set v1 = state_attr('sensor.danfoss_session_data', 'today_kwh') %}
+      {% set v2 = state_attr('sensor.danfoss_session_data_2', 'today_kwh') %}
+      {{ (v1 if is_number(v1) else v2) | float(none) }}
+    availability: >
+      {% set v1 = state_attr('sensor.danfoss_session_data', 'today_kwh') %}
+      {% set v2 = state_attr('sensor.danfoss_session_data_2', 'today_kwh') %}
+      {{ is_number(v1) or is_number(v2) }}
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: total_increasing
+
+  - name: "Danfoss Current Power Watt"
+    unique_id: danfoss_current_power_watt
+    default_entity_id: sensor.danfoss_current_power_watt
+    state: >
+      {% if is_number(states('sensor.danfoss_current_power')) %}
+        {{ (states('sensor.danfoss_current_power') | float * 1000) | round(0) }}
+      {% else %}
+        {{ none }}
+      {% endif %}
+    availability: "{{ is_number(states('sensor.danfoss_current_power')) }}"
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+
+  - name: "Danfoss Scrape Status"
+    unique_id: danfoss_scrape_status
+    default_entity_id: sensor.danfoss_scrape_status
+    state: >
+      {% set p = states('sensor.danfoss_current_power') %}
+      {% set e = states('sensor.danfoss_production_today') %}
+      {% if p in ['unknown','unavailable','none','None',''] or e in ['unknown','unavailable','none','None',''] %}
+        session_expired
+      {% else %}
+        online
+      {% endif %}
+
+  - name: "Danfoss Session Expired"
+    unique_id: danfoss_session_expired
+    default_entity_id: sensor.danfoss_session_expired
+    state: >
+      {% if states('sensor.danfoss_scrape_status') == 'session_expired' %}
+        on
+      {% else %}
+        off
+      {% endif %}
+
+  - name: "Solar Combined Power Now"
+    unique_id: solar_combined_power_now
+    default_entity_id: sensor.solar_combined_power_now
+    state: >
+      {{
+        (
+          (states('sensor.growatts_pv_power_total') | float(0) / 1000)
+          + (states('sensor.danfoss_current_power') | float(0))
+        ) | round(3)
+      }}
+    unit_of_measurement: "kW"
+    device_class: power
+    state_class: measurement
+
+  - name: "Solar Combined Production Today"
+    unique_id: solar_combined_production_today
+    default_entity_id: sensor.solar_combined_production_today
+    state: >
+      {{
+        (
+          (states('sensor.growatts_today_s_solar_energy_2') | float(0))
+          + (states('sensor.danfoss_production_today') | float(0))
+        ) | round(3)
+      }}
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: total_increasing
+
+  - name: "Battery Combined Charge Power"
+    unique_id: battery_combined_charge_power
+    default_entity_id: sensor.battery_combined_charge_power
+    state: >
+      {{
+        (
+          (states('sensor.growatts_battery_charge_power') | float(0))
+          + (states('sensor.skur_battery_charge_power') | float(0))
+        ) | round(1)
+      }}
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+
+  - name: "Battery Combined Discharge Power"
+    unique_id: battery_combined_discharge_power
+    default_entity_id: sensor.battery_combined_discharge_power
+    state: >
+      {{
+        (
+          (states('sensor.growatts_battery_discharge_power') | float(0))
+          + (states('sensor.skur_battery_discharge_power') | float(0))
+        ) | round(1)
+      }}
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+
+  - name: "Solar Total Savings Today"
+    unique_id: solar_total_savings_today
+    default_entity_id: sensor.solar_total_savings_today
+    state: >
+      {{
+        (
+          (states('sensor.solar_export_value_today') | float(0))
+          + (states('sensor.solar_self_consumption_value_today') | float(0))
+        ) | round(4)
+      }}
+    unit_of_measurement: "kr"
+
+  - name: "Solar Total Savings Current Month"
+    unique_id: solar_total_savings_current_month
+    default_entity_id: sensor.solar_total_savings_current_month
+    state: >
+      {{
+        (
+          (states('sensor.solar_export_value_current_month') | float(0))
+          + (states('sensor.solar_self_consumption_value_current_month') | float(0))
+        ) | round(4)
+      }}
+    unit_of_measurement: "kr"
+
+  - name: "Solar Total Savings Total Ever"
+    unique_id: solar_total_savings_total_ever
+    default_entity_id: sensor.solar_total_savings_total_ever
+    state: >
+      {{
+        (
+          (states('sensor.solar_export_value_total_ever') | float(0))
+          + (states('sensor.solar_self_consumption_value_total_ever') | float(0))
+        ) | round(4)
+      }}
+    unit_of_measurement: "kr"
